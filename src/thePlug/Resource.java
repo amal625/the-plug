@@ -16,6 +16,8 @@ public class Resource implements Comparable<Resource>{
     protected ArrayList<String> tags;
     protected String lastActive;
     protected String contact;
+    protected int removeRequests;
+    protected float rate;
 
     /**
      * Costructor for Resource class, assigns all instance variables (for 3 optional attributes, checks if user entered something) upon creation of new resource
@@ -37,7 +39,11 @@ public class Resource implements Comparable<Resource>{
             this.contact = contact;
         }
     }
-    
+
+    /**
+     * Return the name for that specific resource
+     * @return name for that resource 
+     */
     public String name(){
         return this.name;
     }
@@ -51,12 +57,11 @@ public class Resource implements Comparable<Resource>{
     }
     
     /**
-     * 
-     * 
+     * Return the cost for that specific resource
+     * @return cost for that resource 
      */
     public String getCost(){
-        return this.cost;
-        
+        return this.cost; 
     }
     
     /**
@@ -65,8 +70,8 @@ public class Resource implements Comparable<Resource>{
      */
     public String getType(){
         return this.type;
- 
     }
+    
     /**
      * Return the genre for that specific resource
      * @return genre for that resource 
@@ -74,44 +79,91 @@ public class Resource implements Comparable<Resource>{
     public String getGenre(){
         return this.genre;
     }
+
     /**
      * Return the tags for that specific resource
      * @return tags for that resource 
      */
-    public String getTags(){
+    public ArrayList<String> getTags(){
         return this.tags;
     }
+
     /**
-     * Return the last Active  for that specific resource
+     * Return the last Active for that specific resource
      * @return last Active for that resource 
      */
     public String getlastActve(){
         return this.lastActive;
-    
     }
+
     /**
      * Return the contact for that specific resource
      * @return contact for that resource 
      */
     public String getContact(){
         return this.contact;
+    }
     
+    
+    public void setName(String newName){
+        this.name = newName;
+    }
+    /**
+     * setting a cost by the user 
+     */
+    public void setCost(String newCost){
+        this.cost = newCost;
+    }
+    /**
+     * user sets the lastActive date
+     */
+    public void setLastActive(String newLastActive){
+        this.lastActive = newLastActive;
+    }
+
+    /**
+     * user sets
+     */
+    public void setContact(String newContact){
+        this.contact = newContact;
+    }
+
+    
+    public int comparebyName(Resource a, Resource b){
+        return a.name.compareTo(b.name);
+    }
+
+    public int comparebyType(Resource a, Resource b){
+        return a.type.compareTo(b.type);
+    }
+
+    public int comparebySchool(Resource a, Resource b){
+        return a.school.compareTo(b.school);
+    }
+ 
+    
+    public int comparebyTags(Resource a, Resource b){
+        for (int i = 0; i < Math.min(a.tags.size(), b.tags.size()); i++) { 
+            int comparison = a.tags.get(i).compareTo(b.tags.get(i)); 
+            if (comparison != 0) { 
+                return comparison; 
+            }
+        }
+        return Integer.compare(a.tags.size(), b.tags.size());
     }
     
 
-
-
-    
-
-
-    
-
-    public int compareTo(Resource that){
-        return 0;
+    // gives an error w/o this; can we get rid of it???
+    @Override
+    public int compareTo(Resource o) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'compareTo'");
     }
-
-
-
+    
 
     
+
+
+
+
 }
