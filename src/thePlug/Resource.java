@@ -22,13 +22,16 @@ public class Resource implements Comparable<Resource>{
     /**
      * Costructor for Resource class, assigns all instance variables (for 3 optional attributes, checks if user entered something) upon creation of new resource
      */
-    public Resource(String name, String school, String cost, String type, String genre, ArrayList<String> tags, String lastActive, String contact){
+    public Resource(String name, String school, String cost, String type, String genre, ArrayList<String> tags, String lastActive, String contact, int removeRequests, float rate){
         this.name = name;
         this.school = school;
         this.cost = cost;
         this.type = type;
         this.genre = genre;
-        
+        this.contact = contact;
+        this.removeRequests = removeRequests;
+        this.rate = rate;
+
         if (!tags.equals("None")){ //if the user does not add a tag before entering (null) or if the user does not want a tag == "none"
             this.tags = tags;
         }
@@ -37,6 +40,9 @@ public class Resource implements Comparable<Resource>{
         }
         if (!contact.equals("None")){ //if the user does not add a contact before entering (null) or if the user does not want a contact == "none"
             this.contact = contact;
+        }
+        if (removeRequests != 0){ //if the user does not add a contact before entering (null) or if the user does not want a contact == "none"
+            this.removeRequests = removeRequests;
         }
     }
 
@@ -103,6 +109,23 @@ public class Resource implements Comparable<Resource>{
     public String getContact(){
         return this.contact;
     }
+    /**
+     * will return the number of remove requests 
+     * @return total removeRequests
+     */
+    public int getremoveRequests(){
+        return this.removeRequests;
+    }
+    /**
+     * get the rating ( should we do an average here of all ratings)
+     * @return rating
+     */
+    public float getRate(){
+        return this.rate;
+    }
+
+
+    
     
     
     public void setName(String newName){
@@ -128,6 +151,21 @@ public class Resource implements Comparable<Resource>{
         this.contact = newContact;
     }
 
+    /**
+     * will allow the user to add a remove request
+     * @param newRemoveRequests
+     */
+    public void setRemoveRequests(int newRemoveRequests){
+        this.removeRequests = newRemoveRequests;
+    }
+    /**
+     * will allow rating for the user
+     * @param newRate
+     */
+    public void rate (float newRate){
+        this.rate = newRate;
+
+    }
     
     public int comparebyName(Resource a, Resource b){
         return a.name.compareTo(b.name);
