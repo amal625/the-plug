@@ -4,7 +4,7 @@ import java.util.TreeSet;
 public class BST<Key extends Comparable<Key>, Value> {
     private Node root; // Root of BST
 
-    private class Node {
+    protected class Node {
         private Key key; // Sorted by key
         private Value val; // Associated value
         private Node left, right; // Roots of left and right subtrees
@@ -17,11 +17,11 @@ public class BST<Key extends Comparable<Key>, Value> {
         }
     }
 
-    public Value get(Key key) { //recursive implementation
+    protected Value get(Key key) { //recursive implementation
         return get(root, key);
     }
 
-    private Value get(Node x, Key key) {
+    protected Value get(Node x, Key key) {
         if (x == null) return null;
         int cmp = key.compareTo(x.key);
         if (cmp < 0) return get(x.left, key);
@@ -30,12 +30,12 @@ public class BST<Key extends Comparable<Key>, Value> {
     }
 
     //insert 1 creates new node or 2 updates existing node
-    public void insert(Key key, Value val) { //recursive implementation
+    protected void insert(Key key, Value val) { //recursive implementation
         root = insert(root, key, val);
     }
 
     // helper (@returns root of subtree at x)
-    private Node insert(Node x, Key key, Value val) {
+    protected Node insert(Node x, Key key, Value val) {
         if (x == null) return new Node(key, val, 1); //empty subtree, insert new node
         int cmp = key.compareTo(x.key);
         if (cmp < 0) x.left = insert(x.left, key, val);
@@ -45,12 +45,12 @@ public class BST<Key extends Comparable<Key>, Value> {
         return x;
     }
     
-    public void delete(Key key) { //recursive implementation
+    protected void delete(Key key) { //recursive implementation
         root = delete(root, key);
     }
     
     //helper (@returns root of new subtree at x)
-    private Node delete(Node x, Key key) {
+    protected Node delete(Node x, Key key) {
         if (x == null) return null; 
         //search part
         int cmp = key.compareTo(x.key);
@@ -71,20 +71,20 @@ public class BST<Key extends Comparable<Key>, Value> {
     }
 
     //get the minimum value of the subtree at x
-    private Node min(Node x) { 
+    protected Node min(Node x) { 
         if (x.left == null) return x;
         return min(x.left);
     }
 
     //delete the minimum val
-    private Node deleteMin(Node x) {
+    protected Node deleteMin(Node x) {
         if (x.left == null) return x.right;
         x.left = deleteMin(x.left);
         x.size = size(x.left) + size(x.right) + 1;  //recalculate size given size of subtrees plus self
         return x;
     }
 
-    private int size(Node x) {
+    protected int size(Node x) {
         return (x == null) ? 0 : x.size;
     }
 
@@ -93,7 +93,7 @@ public class BST<Key extends Comparable<Key>, Value> {
         return buildTreeString(root, 0);
     }
 
-    private String buildTreeString(Node node, int level) {
+    protected String buildTreeString(Node node, int level) {
         if (node == null) return "";
         StringBuilder sb = new StringBuilder();
         sb.append(" ".repeat(level * 4)).append(node.key).append("\n");

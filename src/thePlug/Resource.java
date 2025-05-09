@@ -17,12 +17,13 @@ public class Resource implements Comparable<Resource>{
     protected String lastActive;
     protected String contact;
     protected int removeRequests;
-    protected float rate;
+    protected double rate;
+    private int numRatings = 0;
 
     /**
      * Costructor for Resource class, assigns all instance variables (for 3 optional attributes, checks if user entered something) upon creation of new resource
      */
-    public Resource(String name, String school, String cost, String type, String genre, ArrayList<String> tags, String lastActive, String contact, int removeRequests, float rate){
+    public Resource(String name, String school, String cost, String type, String genre, ArrayList<String> tags, String lastActive, String contact, int removeRequests, double rate){
         this.name = name;
         this.school = school;
         this.cost = cost;
@@ -50,7 +51,7 @@ public class Resource implements Comparable<Resource>{
      * Return the name for that specific resource
      * @return name for that resource 
      */
-    public String name(){
+    public String getName(){
         return this.name;
     }
     
@@ -120,13 +121,12 @@ public class Resource implements Comparable<Resource>{
      * get the rating ( should we do an average here of all ratings)
      * @return rating
      */
-    public float getRate(){
-        return this.rate;
-    }
-
-
-    
-    
+    public double getRate(){
+        if (numRatings == 0){
+            return -1;
+        }
+        return rate/numRatings;
+    }   
     
     public void setName(String newName){
         this.name = newName;
@@ -163,12 +163,12 @@ public class Resource implements Comparable<Resource>{
      * @param newRate
      */
     public void rate (float newRate){
-        this.rate = newRate;
-
+        numRatings++;
+        this.rate += newRate;
     }
     
-    public int comparebyName(Resource a, Resource b){
-        return a.name.compareTo(b.name);
+    public int compareTo(Resource a){
+        return this.name.compareTo(a.name);
     }
 
     public int comparebyType(Resource a, Resource b){
@@ -180,7 +180,7 @@ public class Resource implements Comparable<Resource>{
     }
  
     
-    public int comparebyTags(Resource a, Resource b){
+    public int comparebyTags(Resource a, Resource b){ //put a pin in it come back 
         for (int i = 0; i < Math.min(a.tags.size(), b.tags.size()); i++) { 
             int comparison = a.tags.get(i).compareTo(b.tags.get(i)); 
             if (comparison != 0) { 
@@ -189,19 +189,6 @@ public class Resource implements Comparable<Resource>{
         }
         return Integer.compare(a.tags.size(), b.tags.size());
     }
-    
-
-    // gives an error w/o this; can we get rid of it???
-    @Override
-    public int compareTo(Resource o) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'compareTo'");
-    }
-    
-
-    
-
-
 
 
 }
