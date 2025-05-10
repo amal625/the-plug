@@ -89,20 +89,20 @@ public class BST<Key extends Comparable<Key>, Value> {
     }
 
 
-    public String toString() {
-        return buildTreeString(root, 0);
-    }
+    // public String toString() {
+    //     return buildTreeString(root, 0);
+    // }
 
-    protected String buildTreeString(Node node, int level) {
-        if (node == null) return "";
-        StringBuilder sb = new StringBuilder();
-        sb.append(" ".repeat(level * 4)).append(node.key).append("\n");
-        if (node.left != null || node.right != null) {
-            sb.append(buildTreeString(node.left, level + 1));
-            sb.append(buildTreeString(node.right, level + 1));
-        }
-        return sb.toString();
-    }
+    // protected String buildTreeString(Node node, int level) {
+    //     if (node == null) return "";
+    //     StringBuilder sb = new StringBuilder();
+    //     sb.append(" ".repeat(level * 4)).append(node.key).append("\n");
+    //     if (node.left != null || node.right != null) {
+    //         sb.append(buildTreeString(node.left, level + 1));
+    //         sb.append(buildTreeString(node.right, level + 1));
+    //     }
+    //     return sb.toString();
+    // }
 
     public static void main(String[] args) {
         BST<String, Double> bst = new BST<>();

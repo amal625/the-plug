@@ -23,7 +23,7 @@ public class Resource implements Comparable<Resource>{
     /**
      * Costructor for Resource class, assigns all instance variables (for 3 optional attributes, checks if user entered something) upon creation of new resource
      */
-    public Resource(String name, String school, String cost, String type, String genre, ArrayList<String> tags, String lastActive, String contact, int removeRequests, double rate){
+    public Resource(String name, String school, String cost, String type, String genre, ArrayList<String> tags, String lastActive, String contact, double rate){
         this.name = name;
         this.school = school;
         this.cost = cost;
@@ -33,18 +33,18 @@ public class Resource implements Comparable<Resource>{
         this.removeRequests = removeRequests;
         this.rate = rate;
 
-        if (!tags.equals("None")){ //if the user does not add a tag before entering (null) or if the user does not want a tag == "none"
+        // if (!tags.equals("None")){ //if the user does not add a tag before entering (null) or if the user does not want a tag == "none"
             this.tags = tags;
-        }
-        if (!lastActive.equals("None")){ //if the user does not add a last active before entering (null) or if the user does not want a last active date == "none"
+        // }
+        // if (!lastActive.equals("None")){ //if the user does not add a last active before entering (null) or if the user does not want a last active date == "none"
             this.lastActive = lastActive;
-        }
-        if (!contact.equals("None")){ //if the user does not add a contact before entering (null) or if the user does not want a contact == "none"
+        // }
+        // if (!contact.equals("None")){ //if the user does not add a contact before entering (null) or if the user does not want a contact == "none"
             this.contact = contact;
-        }
-        if (removeRequests != 0){ //if the user does not add a contact before entering (null) or if the user does not want a contact == "none"
+        // }
+        // if (removeRequests != 0){ //if the user does not add a contact before entering (null) or if the user does not want a contact == "none"
             this.removeRequests = removeRequests;
-        }
+        // }
     }
 
     /**
@@ -114,7 +114,7 @@ public class Resource implements Comparable<Resource>{
      * will return the number of remove requests 
      * @return total removeRequests
      */
-    public int getremoveRequests(){
+    public int getRemoveRequests(){
         return this.removeRequests;
     }
     /**
@@ -168,7 +168,7 @@ public class Resource implements Comparable<Resource>{
     }
     
     public int compareTo(Resource a){
-        return this.name.compareTo(a.name);
+        return this.getName().compareTo(a.getName());
     }
 
     public int comparebyType(Resource a, Resource b){
@@ -190,5 +190,34 @@ public class Resource implements Comparable<Resource>{
         return Integer.compare(a.tags.size(), b.tags.size());
     }
 
+    
+    public String toString(){
+        StringBuilder retString = new StringBuilder("");
+        retString.append("Resource name: " + this.getName());
+        retString.append("\nSchool : " + this.getSchool());
+        retString.append("\nCost: " + this.getCost());
+        retString.append("\nType: " + this.getType());
+        retString.append("\nGenre: " + this.getGenre());
+        
+        if (this.getTags().size() != 0){
+            retString.append("\nTags " + this.getTags());
+        }
+        if (!this.getlastActve().equals("None")){
+            retString.append("\nLast Active: " + this.getTags());
+        }
+        if (this.getContact().equals("None")){
+            retString.append("\nContact: " + this.getContact());
+        }
+        retString.append("\nRemove Requests: " + this.getRemoveRequests());
+        
+        if (this.getRate() == -1){
+            retString.append("\nNo ratings collected for this resource");
+        }
+        else{
+            retString.append("\nRate: " + this.getRate());
+        }
 
+        return retString.toString();
+
+    }
 }

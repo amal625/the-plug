@@ -2,17 +2,20 @@ package thePlug;
 
 import java.security.Key;
 import java.util.TreeSet;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ResourceBST implements ResourceBSTInterface<Resource>{
     private Node root; // Root of BST
     ArrayList<Resource> resources = new ArrayList<>();
+    //could maybe make a get feature function, if they're 
 
-    protected class Node {
+    public class Node {
         private Resource element; // element for sorting, will be resource
         private Node left, right; // Roots of left and right subtrees
         private int size; // Number of nodes in subtree rooted at this node
 
-        public Node(Resource elemenet, int size) {
+        public Node(Resource element, int size) {
             this.element = element;
             this.size = size;
         }
@@ -100,7 +103,7 @@ public class ResourceBST implements ResourceBSTInterface<Resource>{
     //     return null;
     // }
     
-    public void inorderTraversal(Node node, ArrayList<Resource> resources){  //in case we want to represent the data alphabetically 
+    public void inOrderTraversal(Node node, ArrayList<Resource> resources){  //in case we want to represent the data alphabetically 
         if (node.right == null && node.left == null){
             resources.add(node.element);
         } else if(node.left == null){
@@ -108,13 +111,35 @@ public class ResourceBST implements ResourceBSTInterface<Resource>{
             inOrderTraversal(node.right, resources);
         } else if(node.right == null){
             inOrderTraversal(node.left, resources);
-            resources.add(node.element)
+            resources.add(node.element);
         }else{
             inOrderTraversal(node.left, resources);
             resources.add(node.element);
-            inOrdertraversal(node.right, resources);
+            inOrderTraversal(node.right, resources);
         }
               
     }
+
+
+    public static void main(String[] args){
+        Resource r1 = new Resource("Apple", "pomona", "free", "item", "mutual aid", new ArrayList<String>(Arrays.asList("a", "b")), "None", "None", 5.0); // create new resource objects
+        Resource r2 = new Resource("Berry", "Claremont", "free","item", "mutual aid", new ArrayList<String>(Arrays.asList("a","b")), "None","None",4.5);
+        Resource r3 = new Resource("Cake", "pomona", "free", "item", "mutual aid", new ArrayList<String>(Arrays.asList("a", "b")), "None", "None", 5.0);
+
+        ResourceBST rBST = new ResourceBST(); //add them to BST
+        rBST.insert(r3);
+        rBST.insert(r1);
+        rBST.insert(r2);
+        
+        ArrayList<Resource> output = new ArrayList<>();
+        rBST.inOrderTraversal(rBST.root, output);
+        System.out.println(output);
+        
+    }
+
+
+
+
+
     
 }
