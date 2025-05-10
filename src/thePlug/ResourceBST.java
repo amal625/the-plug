@@ -1,32 +1,120 @@
 package thePlug;
 
 import java.security.Key;
+import java.util.TreeSet;
 
 public class ResourceBST implements ResourceBSTInterface<Resource>{
-    BST<String, Resource> bst = new BST(); // new tree made period.
+    private Node root; // Root of BST
+    ArrayList<Resource> resources = new ArrayList<>();
 
-    public void insert(Resource resource){ // inserts a new node
-        bst.insert(resource.getName(), resource);
+    protected class Node {
+        private Resource element; // element for sorting, will be resource
+        private Node left, right; // Roots of left and right subtrees
+        private int size; // Number of nodes in subtree rooted at this node
+
+        public Node(Resource elemenet, int size) {
+            this.element = element;
+            this.size = size;
+        }
     }
 
-    public void delete(Resource resource){ // deletes a node 
-
-    }
-
-    public boolean search(Resource resource){ // searches for a node 
-        return false;
-    }
-
-    public Resource highestRated(){ //max rating
-        return null;
-        
-    }
-    public Resource lowestRated(){
-        return null;
+    public Resource search(String name) { //recursive implementation
+        return search(root, name);
     }
     
-    public void inorderTraversal(){  //in case we want to represent the data alphabetically 
+    protected Resource search(Node x, String name){
+        if (x == null) return null;
+        int cmp = name.compareTo(x.element.getName());
+        if (cmp < 0) return search(x.left, name);
+        else if (cmp > 0) return search(x.right, name);
+        else return x.element;
+    }
+    
+
+    public void insert(Resource element){ // inserts a new node
+        root = insert(root, element);
         
+    }
+
+    // helper (@returns root of subtree at x)
+    protected Node insert(Node x, Resource element) {
+        if (x == null) return new Node(element, 1); //empty subtree, insert new node
+        int cmp = element.compareTo(x.element);
+        if (cmp < 0) x.left = insert(x.left, element);
+        else if (cmp > 0) x.right = insert(x.right, element);
+        else x.element = element; //update existing node
+        x.size = size(x.left) + size(x.right) + 1; //update size
+        return x;
+    }
+
+    public void delete(String name){ // deletes a node 
+        root = delete(root, name);
+    }
+
+    //helper (@returns root of new subtree at x)
+    protected Node delete(Node x, String name) {
+        if (x == null) return null; 
+        //search part
+        int cmp = name.compareTo(x.element.getName());
+        if (cmp < 0) x.left = delete(x.left, name);
+        else if (cmp > 0) x.right = delete(x.right, name);
+        //found the node, now the 3 cases
+        else {
+            if (x.right == null) return x.left; //1 & 2 - no or single child
+            if (x.left == null) return x.right; 
+            Node temp = x; //3. replace with successor 
+            x = min(temp.right); //changes root to new successor - min key of right subtree
+            x.right = deleteMin(temp.right); //new root right is old root's right side minus successor
+            x.left = temp.left; //new root left is old root's left
+        }
+        x.size = size(x.left) + size(x.right) + 1; //recalculate size given size of subtrees plus self
+        // decrements size because subtree (x.left / x.right) was probably set to null
+        return x;
+    }
+
+    //////////////////////
+    //get the minimum value of the subtree at x
+    protected Node min(Node x) { 
+        if (x.left == null) return x;
+        return min(x.left);
+    }
+
+    protected int size(Node x) {
+        return (x == null) ? 0 : x.size;
+    }
+
+    //delete the minimum val
+    protected Node deleteMin(Node x) {
+        if (x.left == null) return x.right;
+        x.left = deleteMin(x.left);
+        x.size = size(x.left) + size(x.right) + 1;  //recalculate size given size of subtrees plus self
+        return x;
+    }
+    /////////////////////
+
+    // public Resource highestRated(){ //max rating
+    //     return null;
+    // }
+    
+    // public Resource lowestRated(){
+    //     return null;
+    // }
+    
+    public void inorderTraversal(Node node, ArrayList<Resource> resources){  //in case we want to represent the data alphabetically 
+        if (node.right == null && node.left == null){
+            resources.add(node.element);
+        } else if(node.left == null){
+            resources.add(node.element);
+            inOrderTraversal(node.right, resources);
+        } else if(node.right == null){
+            inOrderTraversal(node.left, resources);
+            resources.add(node.element)
+        }else{
+            inOrderTraversal(node.left, resources);
+            resources.add(node.element);
+            inOrdertraversal(node.right, resources);
+        }
+              
     }
     
 }
