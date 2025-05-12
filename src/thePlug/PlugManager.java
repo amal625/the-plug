@@ -39,7 +39,7 @@ public class PlugManager {
         
         int costIndex = categorizedResources.createNewList(5); //cost category(free,reduced fare,ect.)
         
-        intializeSchools(schoolsIndex); //add subcategories to each category
+        initializeSchools(schoolsIndex); //add subcategories to each category
         initilaizeTypes(typesIndex);
         initializeGenres(genresIndex);
         intializeCosts(costIndex);
@@ -52,7 +52,7 @@ public class PlugManager {
      * helper methods to initalize subcategories    
      * 
      */
-    public void initalizeSchools(int index){
+    public void initializeSchools(int index){
         String[] schools = {"Pomona", "Claremont Mckenna", "Harvey Mudd", "Scripps", "Pitzer"};
         for (String school : schools){
             ResourceArrayList<Resource> schoolResourceList = new ResourceArrayList <>(10);
