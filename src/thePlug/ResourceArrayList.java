@@ -159,6 +159,7 @@ public class ResourceArrayList<Resource> {
      * @return the element at the specified indices
      * @throws IndexOutOfBoundsException if any index is out of range
      */
+    @SuppressWarnings("unchecked")
     public ResourceArrayList<Resource> get(int listIndex, int collegeIndex){
         if(listIndex >= numColleges || listIndex < 0){
             throw new IndexOutOfBoundsException("List index" + listIndex + "out of bounds");
@@ -418,8 +419,6 @@ public class ResourceArrayList<Resource> {
             System.out.println("\nFinal structure after removing CS list:");
             System.out.println(nestedLists);
     }
-
-
     
 		
 }
