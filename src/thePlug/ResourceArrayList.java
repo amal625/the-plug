@@ -7,9 +7,10 @@ import java.util.Iterator;
 
 
 public class ResourceArrayList<Resource> {
+    // private E[] data;
     private ResourceArrayList<Resource>[] colleges; // colleges within intial array
     private int numColleges; //num of objects in colleges List
-   
+
 
     /**
 	 * Constructs an ArrayList with the specified capacity.
@@ -297,7 +298,7 @@ public class ResourceArrayList<Resource> {
 
 		return -1;
 	}
- /**
+    /**
 	 * Checks if the ArrayList contains the specified E.
 	 * 
 	 * @param element
