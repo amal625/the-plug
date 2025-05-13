@@ -100,6 +100,18 @@ public class PlugManager {
             while((line = reader.readLine()) != null){
                 System.out.println(line);
                 String[] resource = line.split(","); 
+
+
+                String substr = line.substring(line.length()-2, line.length());
+                if (substr.length() == 2 && substr.equals(",,")){
+                    String[] oldResource = resource;
+                    resource = new String[resource.length + 1];
+                    for (int i = 0; i<oldResource.length; i++){
+                        resource[i] = oldResource[i];
+                    }
+                    resource[oldResource.length] = "";
+                }
+
                 String name = resource[0];
                 String school = resource[1];
                 String cost = resource[2];
@@ -114,10 +126,13 @@ public class PlugManager {
                 //lastActive
                 // contact,,fli
 
-                 String contact = resource[5];
+                String contact = resource[5];
                   if (contact.equals("")){
                     contact = "None";
                 }
+
+                // Book Room,Pomona,Free,Item,Academic,zztofpzgjv@pomona.edu,,
+                // [Book Room, Pomona, Free, Item, Academic, zztofpzgjv@pomona.edu,,AAMP]
 
                 String lastActive = resource[6];
                 if (lastActive.equals("")){
@@ -125,12 +140,12 @@ public class PlugManager {
                 }
                 
                 ArrayList<String> tags = new ArrayList<>();
-                if (resource.length >= 7 && resource[7] != null) { 
+                if (resource.length > 7 && resource[7] != null) { 
                     for (String tag : resource[7].split(";")) {
                         if (!tag.trim().isEmpty()) {
                             tags.add(tag.trim());
                         }    
-                    }
+                    }s
                 }
 
                 Resource resourceObject = new Resource(name, school, cost, type, genre, tags, lastActive, contact);
@@ -203,7 +218,9 @@ public class PlugManager {
 
             // add to school bucket
             ArrayList school_names = new ArrayList<>(Arrays.asList("Claremont McKenna", "Harvey Mudd", " Pitzer", "Pomona", "Scripps", "7C"));
+            
             categoriesResources.get(SCHOOL_INDEX).get(school_names.indexOf(school)).add(resource);
+           
 
             // add to cost bucket
             ArrayList cost_names = new ArrayList<>(Arrays.asList("free", "1-10", "10-20", "20-30", "30+"));
@@ -226,6 +243,23 @@ public class PlugManager {
      */
     public void userAddResource(Resource resource){
         Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Enter the name of the resource: ");
+        String name = scanner.nextLine();
+
+        System.out.println("Enter the school of the resource (Claremont McKenna, Harvey Mudd, Pitzer, Pomona, Scripps, 7C): ");
+        String school = scanner.nextLine();
+
+        System.out.println("Enter the cost of the resource (free, 1-10, 10-20, 20-30, 30+)");
+        String cost = scanner.nextLine();
+
+        System.out.println("Enter the type of the resource (Activity, Event, Fare Reduction, Grant/Funding, Item, Organizational, Service): ");
+        String type = scanner.nextLine();
+
+        System.out.println("Enter the type of the resource (Academic, Career, Entertainment, food, Healthcare and Wellness, Housing, Mutual Aid, Other, Religious, Supplies, Sustainabilty, Transportation): ");
+        String genre = scanner.nextLine();
+        
+        
     }
 
 

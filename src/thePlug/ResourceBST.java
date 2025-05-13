@@ -139,7 +139,10 @@ public class ResourceBST implements ResourceBSTInterface<Resource>{
 
         //////// TESTING SPLIT:::
         String s = "f,,two";
-        String[] split = s.split(",");
+        String s1 = "f,blank";
+        // Book Room,Pomona,Free,Item,Academic,zztofpzgjv@pomona.edu,,
+        String s2 = "f,blank,,";
+        String[] split = s2.split(",");
         System.out.println(Arrays.toString(split));
         System.out.println(split[1].equals(""));
         System.out.println(split[1].equals(" "));
