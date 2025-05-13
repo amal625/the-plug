@@ -23,7 +23,7 @@ public class Resource implements Comparable<Resource>{
     /**
      * Costructor for Resource class, assigns all instance variables (for 3 optional attributes, checks if user entered something) upon creation of new resource
      */
-    public Resource(String name, String school, String cost, String type, String genre, ArrayList<String> tags, String lastActive, String contact, double rate){
+    public Resource(String name, String school, String cost, String type, String genre, ArrayList<String> tags, String lastActive, String contact){
         this.name = name;
         this.school = school;
         this.cost = cost;
@@ -31,7 +31,7 @@ public class Resource implements Comparable<Resource>{
         this.genre = genre;
         this.contact = contact;
         this.removeRequests = removeRequests;
-        this.rate = rate;
+    
 
         // if (!tags.equals("None")){ //if the user does not add a tag before entering (null) or if the user does not want a tag == "none"
             this.tags = tags;
@@ -163,8 +163,13 @@ public class Resource implements Comparable<Resource>{
      * @param newRate
      */
     public void rate (float newRate){
+        if (numRatings == 0){
+            this.rate = newRate;
+        }
+        else{
+            this.rate += newRate;
+        }
         numRatings++;
-        this.rate += newRate;
     }
     
     public int compareTo(Resource a){

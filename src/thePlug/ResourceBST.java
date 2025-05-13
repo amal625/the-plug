@@ -122,19 +122,31 @@ public class ResourceBST implements ResourceBSTInterface<Resource>{
 
 
     public static void main(String[] args){
-        Resource r1 = new Resource("Apple", "pomona", "free", "item", "mutual aid", new ArrayList<String>(Arrays.asList("a", "b")), "None", "None", 5.0); // create new resource objects
-        Resource r2 = new Resource("Berry", "Claremont", "free","item", "mutual aid", new ArrayList<String>(Arrays.asList("a","b")), "None","None",4.5);
-        Resource r3 = new Resource("Cake", "pomona", "free", "item", "mutual aid", new ArrayList<String>(Arrays.asList("a", "b")), "None", "None", 5.0);
+        // Resource r1 = new Resource("Apple", "pomona", "free", "item", "mutual aid", new ArrayList<String>(Arrays.asList("a", "b")), "None", "None"); // create new resource objects
+        // Resource r2 = new Resource("Berry", "Claremont", "free","item", "mutual aid", new ArrayList<String>(Arrays.asList("a","b")), "None","None");
+        // Resource r3 = new Resource("Cake", "pomona", "free", "item", "mutual aid", new ArrayList<String>(Arrays.asList("a", "b")), "None", "None");
 
-        ResourceBST rBST = new ResourceBST(); //add them to BST
-        rBST.insert(r3);
-        rBST.insert(r1);
-        rBST.insert(r2);
+        // ResourceBST rBST = new ResourceBST(); //add them to BST
+        // rBST.insert(r3);
+        // rBST.insert(r1);
+        // rBST.insert(r2);
         
-        ArrayList<Resource> output = new ArrayList<>();
-        rBST.inOrderTraversal(rBST.root, output);
-        System.out.println(output);
-        
+        // ArrayList<Resource> output = new ArrayList<>();
+        // rBST.inOrderTraversal(rBST.root, output);
+        // System.out.println(output);
+
+
+
+        //////// TESTING SPLIT:::
+        String s = "f,,two";
+        String[] split = s.split(",");
+        System.out.println(Arrays.toString(split));
+        System.out.println(split[1].equals(""));
+        System.out.println(split[1].equals(" "));
+        System.out.println(split[2].equals("two"));
+        System.out.println(split[2].equals(" two"));
+
+
     }
 
 
