@@ -1,6 +1,7 @@
 import java.util.NoSuchElementException;
 import java.lang.IndexOutOfBoundsException;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * The {@code ArrayList} class represents a resizing list. It has been
@@ -14,7 +15,7 @@ import java.util.Iterator;
  * @author Aden Siebel
  *
  */
-public class ArrayList<E> implements List<E> {
+public class ResourceArray<E> implements List<E> {
 	private E[] data; // underlying array of Es
 	private int size; // number of Es in arraylist. 
 	
@@ -314,4 +315,5 @@ public class ArrayList<E> implements List<E> {
 		System.out.println(a1);
 		a1.remove(0);
 		System.out.println(a1);
-	}
+
+		}	}

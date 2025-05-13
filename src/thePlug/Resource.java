@@ -99,7 +99,7 @@ public class Resource implements Comparable<Resource>{
      * Return the last Active for that specific resource
      * @return last Active for that resource 
      */
-    public String getlastActve(){
+    public String getlastActive(){
         return this.lastActive;
     }
 
@@ -207,7 +207,7 @@ public class Resource implements Comparable<Resource>{
         if (this.getTags().size() != 0){
             retString.append("\nTags " + this.getTags());
         }
-        if (!this.getlastActve().equals("None")){
+        if (!this.getlastActive().equals("None")){
             retString.append("\nLast Active: " + this.getTags());
         }
         if (this.getContact().equals("None")){

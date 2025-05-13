@@ -24,6 +24,10 @@ public class ResourceBST implements ResourceBSTInterface<Resource>{
     public Resource search(String name) { //recursive implementation
         return search(root, name);
     }
+
+    public Node getRoot(){
+        return root;
+    }
     
     protected Resource search(Node x, String name){
         if (x == null) return null;
@@ -52,6 +56,10 @@ public class ResourceBST implements ResourceBSTInterface<Resource>{
 
     public void delete(String name){ // deletes a node 
         root = delete(root, name);
+    }
+
+    public void deleteResource (Resource resource){
+        delete(resource.getName());
     }
 
     //helper (@returns root of new subtree at x)

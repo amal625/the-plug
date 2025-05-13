@@ -347,75 +347,210 @@ public class PlugManager {
     
 
 
-    
-    
-    
 /**
  * feature 2: Request removal of a resource
  * @param resourceName Name of a resource to remove
  * @return true if resource removed, false otherwise
  */
-public boolean requestRemoval(String resourceName){
-    //make sure there is an input parameter 
-    if (resourceName == null || resourceName.trim().isEmpty()){
+public boolean requestRemoval(String resourceName) {
+    // Make sure there is an input parameter 
+    if (resourceName == null || resourceName.trim().isEmpty()) {
         System.err.println("Error: Resource name cannot be null");
         return false;
     }
-    try{
+    
+    try {
         Resource resource = resourcesByName.search(resourceName);
-        if (resource == null){
-            System.err.println("Resource not found:" + resourceName);
+        if (resource == null) {
+            System.err.println("Resource not found: " + resourceName);
             return false;
         }
-    //increment removal requests & check threshold
-    resource.setRemoveRequests(resource.getRemoveRequests()+1);
-    if (resource.getRemoveRequests() >= removalCount);
-        if (removeResourceFromDataStructures(resource)){
-            System.out.println("Resource" + resourceName + "removed after reaching threshold")
-            saveResource();
-            return true;
-        }
-    //update the count
-    saveResource();
-    return false;
-    }catch(Exception e){
-        System.err.println("error processing removal request for:" + resourceName );
-    }
-} private boolean removeResourceFromDataStructures(Resource resource){
-    if (resource == null) return false;
-
-    //remove form BST by name
-    resourcesbyName.delete(resource.getName());
-
-    //remove from tag arrayList 
-    for (String tag: resource.getTags()){
-        resourcesByTag.delete(resource);
-    }
-    removeFromCategories(resource); //if we end up doing a hashtable
-    return true;
-}
-private void removeFromCategories(Resource resource){
-    ArrayList<String> categories = resource.getCategories();
-    if (categories == null) return;
-
-    for (String category : categories){
-        ArrayList<Resource> categoryResources = categoriesResources.get(category);
-        if (categoryResources != null){
-            categoryResources.remove(resource);//remove resource from arraylist
-            if (cateogryResources.isEmpty()){
-                categoriesResources.remove(category); //clean up empty categories
+        
+        // Increment removal requests & check threshold
+        resource.setRemoveRequests(resource.getRemoveRequests() + 1);
+        if (resource.getRemoveRequests() >= removalCount) {
+            if (removeResourceFromDataStructures(resource)) {
+                System.out.println("Resource " + resourceName + " removed after reaching threshold");
+                saveResources();
+                return true;
             }
         }
-    }
-}private void saveResource(){
-    try(ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("resources.new"))){
-        out.writeObject(resourcesByName);
-        out.writeObject(resourcesByTag);
-        out.writeObject(categories);
-    }catch (IOException e){
-        System.err.println("Error saving resources.");
+        
+        // Update the count
+        saveResources();
+        return false;
+    } catch (Exception e) {
+        System.err.println("Error processing removal request for: " + resourceName);
+        e.printStackTrace();
+        return false;
     }
 }
+
+/**
+ * Removes a resource from all data structures
+ * @param resource The resource to remove
+ * @return true if successful, false otherwise
+ */
+private boolean removeResourceFromDataStructures(Resource resource) {
+    if (resource == null) return false;
+
+    // Remove from BST by name
+    resourcesByName.delete(resource.getName());
+
+    // Remove from tag BST
+    // Note: Assuming ResourceBST has a method to delete by resource object
+    // If it doesn't, you'll need to modify the ResourceBST class
+    for (String tag : resource.getTags()) {
+        // delete method in ResourceBST that takes a Resource
+        resourcesByTag.deleteResource(resource);
+    }
+    
+    // Remove from categorized resources
+    removeFromCategories(resource);
+    
+    return true;
+}
+
+/**
+ * Removes resource from category lists ! so far it works but may need to go over it to see if its working the way we want it too
+ * @param resource The resource to remove
+ */
+private void removeFromCategories(Resource resource) {
+    // Get resource attributes
+    String school = resource.getSchool();
+    String cost = resource.getCost();
+    String type = resource.getType();
+    String genre = resource.getGenre();
+    
+    // Lists to look up indices
+    ArrayList<String> school_names = new ArrayList<>(Arrays.asList("Claremont McKenna", "Harvey Mudd", "Pitzer", "Pomona", "Scripps", "7c"));
+    ArrayList<String> cost_names = new ArrayList<>(Arrays.asList("Free", "1-10", "10-20", "20-30", "30+"));
+    ArrayList<String> type_names = new ArrayList<>(Arrays.asList("Activity", "Event", "Fare Reduction", "Grant/Funding", "Item", "Organizational", "Service"));
+    ArrayList<String> genre_names = new ArrayList<>(Arrays.asList("Academic", "Career", "Entertainment", "Food", "Healthcare and Wellness", "Housing", "Mutual Aid", "Other", "Religious", "Supplies", "Sustainability", "Transportation"));
+    
+    // Remove from school category
+    int schoolIndex = school_names.indexOf(school);
+    if (schoolIndex != -1) {
+        categoriesResources.get(SCHOOL_INDEX).get(schoolIndex).remove(resource);
+    }
+    
+    // Remove from cost category
+    int costIndex = cost_names.indexOf(cost);
+    if (costIndex != -1) {
+        categoriesResources.get(COST_INDEX).get(costIndex).remove(resource);
+    }
+    
+    // Remove from type category
+    int typeIndex = type_names.indexOf(type);
+    if (typeIndex != -1) {
+        categoriesResources.get(TYPE_INDEX).get(typeIndex).remove(resource);
+    }
+    
+    // Remove from genre category
+    int genreIndex = genre_names.indexOf(genre);
+    if (genreIndex != -1) {
+        categoriesResources.get(GENRE_INDEX).get(genreIndex).remove(resource);
+    }
+}
+
+/**
+ * Saves resources to file
+ */
+private void saveResources() {
+    try {
+        // Create a BufferedWriter to write to the file
+        BufferedWriter writer = new BufferedWriter(new FileWriter(resourceFile));
+        
+        // Write header row
+        writer.write("Name,School,Cost,Type,Genre,Contact,LastActive,Tags\n");
+        
+        // Collect all resources from BST
+        ArrayList<Resource> allResources = new ArrayList<>();
+        collectAllResources(resourcesByName.Root(), allResources);
+        
+        // Write each resource to the file
+        for (Resource resource : allResources) {
+            StringBuilder line = new StringBuilder();
+            line.append(resource.getName()).append(",");
+            line.append(resource.getSchool()).append(",");
+            line.append(resource.getCost()).append(",");
+            line.append(resource.getType()).append(",");
+            line.append(resource.getGenre()).append(",");
+            line.append(resource.getContact()).append(",");
+            line.append(resource.getlastActive()).append(",");
+            
+            // Join tags with semicolons
+            ArrayList<String> tags = resource.getTags();
+            if (tags != null && !tags.isEmpty()) {
+                for (int i = 0; i < tags.size(); i++) {
+                    line.append(tags.get(i));
+                    if (i < tags.size() - 1) {
+                        line.append(";");
+                    }
+                }
+            }
+            
+            writer.write(line.toString() + "\n");
+        }
+        
+        writer.close();
+    } catch (IOException e) {
+        System.err.println("Error saving resources: " + e.getMessage());
+    }
+}
+
+/**
+ * Helper method to collect all resources from the BST
+ * @param node Current node
+ * @param resources List to store resources
+ */
+private void collectAllResources(ResourceBST.Node node, ArrayList<Resource> resources) {
+    if (node == null) return;
+    
+    // In-order traversal
+    ArrayList<Resource> allResources = new ArrayList<>(); // i don't know if we want to do it in a arrayList
+    resourcesByName.inOrderTraversal(resourcesByName.getRoot(), allResources);
+
+}
+public void userRequestResourceRemoval(){
+    Scanner scanner = new Scanner(System.in);
+
+    System.out.println("Enter the name of the resource you want to request for removal");
+    String resourceName = scanner.nextLine().trim();
+
+    if(resourceName.isEmpty()){
+        System.out.println("Error: Resource name cannot be empty");
+        return;
+    }
+    Resource resource = resourcesByName.search(resourceName);
+    if (resource == null){
+        System.out.println("Resource not found" + resourceName);
+        return;
+    }
+    //increment remove request count
+    int currentCount = resource.getRemoveRequests();
+    resource.setRemoveRequests(currentCount + 1);
+    System.out.println("Remove request submitted. Current count:" + resource.getRemoveRequests());
+
+    if (resource.getRemoveRequests() >= removalCount){
+        System.out.println("Maximum removal requests reached.Removing resource from system..");
+        if (removeResourceFromDataStructures(resource)){
+            System.out.println("Resource successfully removed.");
+        }else{
+            System.out.println("Error: Could not remove resource.");
+        }
+
+        saveResources();//save updated state to file
+
+    }
+
+  /**
+   * feature 4: Rate a resource
+   */
+
+
+}
+
 
         public static void main(String[] args){
         PlugManager plugManager = new PlugManager();
@@ -437,7 +572,86 @@ private void removeFromCategories(Resource resource){
         // } else {
         //     System.out.println("❌ Resource not found.");
         // }
-    }
+    //     // Create some test Resources
+    // Resource r1 = new Resource("Apple", "Pomona", "Free", "Item", "Academic",
+    // new ArrayList<>(Arrays.asList("fli", "student support")), "None", "apple@pomona.edu");
 
+    // Resource r2 = new Resource("Berry", "Scripps", "1-10", "Service", "Healthcare and Wellness",
+    //     new ArrayList<>(Arrays.asList("aamp", "wellness")), "None", "berry@scripps.edu");
+
+    // Resource r3 = new Resource("Cake", "Harvey Mudd", "Free", "Event", "Entertainment",
+    //     new ArrayList<>(Arrays.asList("fun", "free food")), "None", "cake@mudd.edu");
+
+    // // Create BST and insert resources
+    // ResourceBST bst = new ResourceBST();
+    // bst.insert(r1);
+    // bst.insert(r2);
+    // bst.insert(r3);
+
+    // // In-order traversal before deletion
+    // System.out.println("Resources in BST (before deletion):");
+    // ArrayList<Resource> beforeDelete = new ArrayList<>();
+    // bst.inOrderTraversal(bst.getRoot(), beforeDelete);
+    // for (Resource r : beforeDelete) {
+    // System.out.println("- " + r.getName());
+    // }
+
+    // // Delete "Berry"
+    // System.out.println("\nDeleting 'Berry'...");
+    // bst.delete("Berry");
+
+    // // In-order traversal after deletion
+    // System.out.println("\nResources in BST (after deletion):");
+    // ArrayList<Resource> afterDelete = new ArrayList<>();
+    // bst.inOrderTraversal(bst.getRoot(), afterDelete);
+    // for (Resource r : afterDelete) {
+    // System.out.println("- " + r.getName());
+    // }
+
+//     // Search test
+//     System.out.println("\nSearching for 'Apple':");
+//     Resource found = bst.search("Apple");
+//     System.out.println(found != null ? "Found: " + found.getName() : "Not found");
+
+//     System.out.println("\nSearching for 'Berry':");
+//     found = bst.search("Berry");
+//     System.out.println(found != null ? "Still found (should be deleted)" : "Not found (correct)");
+
+//     PlugManager manager = new PlugManager();
+//     manager.loadResources();  // Make sure this is working
+
+//     Scanner scanner = new Scanner(System.in);
+//     System.out.println("1. Request removal of a resource");
+//     System.out.println("2. Exit");
+//     System.out.print("Choose an option: ");
     
-}
+//     int choice = scanner.nextInt();
+//     scanner.nextLine(); // consume newline
+
+//     // Create and insert some test resources
+//     Resource r4 = new Resource("Apple", "Pomona", "Free", "Item", "Academic",
+//             new ArrayList<>(Arrays.asList("fli")), "None", "apple@pomona.edu");
+//     Resource r5 = new Resource("Berry", "Scripps", "1-10", "Service", "Healthcare and Wellness",
+//             new ArrayList<>(Arrays.asList("aamp")), "None", "berry@scripps.edu");
+//     Resource r6 = new Resource("Cake", "Harvey Mudd", "Free", "Event", "Entertainment",
+//             new ArrayList<>(Arrays.asList("fun")), "None", "cake@mudd.edu");
+
+//     manager.resourcesByName.insert(r1);
+//     manager.resourcesByName.insert(r2);
+//     manager.resourcesByName.insert(r3);
+
+//     // // Show user what resources exist ~ i only did this bc i forgot resources it works!!
+//     // ArrayList<Resource> existing = new ArrayList<>();
+//     // manager.resourcesByName.inOrderTraversal(manager.resourcesByName.getRoot(), existing);
+
+//     // System.out.println("Available Resources:");
+//     // for (Resource res : existing) {
+//     //     System.out.println("- " + res.getName());
+//     // }
+
+//     // Allow user to request removal
+//     manager.userRequestResourceRemoval();
+// }
+
+}}
+
