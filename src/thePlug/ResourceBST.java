@@ -122,9 +122,9 @@ public class ResourceBST implements ResourceBSTInterface<Resource>{
 
 
     public static void main(String[] args){
-        // Resource r1 = new Resource("Apple", "pomona", "free", "item", "mutual aid", new ArrayList<String>(Arrays.asList("a", "b")), "None", "None"); // create new resource objects
-        // Resource r2 = new Resource("Berry", "Claremont", "free","item", "mutual aid", new ArrayList<String>(Arrays.asList("a","b")), "None","None");
-        // Resource r3 = new Resource("Cake", "pomona", "free", "item", "mutual aid", new ArrayList<String>(Arrays.asList("a", "b")), "None", "None");
+        // Resource r1 = new Resource("Apple", "pomona", "free", "item", "Mutual Aid", new ArrayList<String>(Arrays.asList("a", "b")), "None", "None"); // create new resource objects
+        // Resource r2 = new Resource("Berry", "Claremont", "free","item", "Mutual Aid", new ArrayList<String>(Arrays.asList("a","b")), "None","None");
+        // Resource r3 = new Resource("Cake", "pomona", "free", "item", "Mutual Aid", new ArrayList<String>(Arrays.asList("a", "b")), "None", "None");
 
         // ResourceBST rBST = new ResourceBST(); //add them to BST
         // rBST.insert(r3);
