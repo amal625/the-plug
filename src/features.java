@@ -130,5 +130,100 @@ public boolean requestRemoval(String resourceName){
     return false;
     }catch(Exception e){
         System.err.println("error processing removal request for:" + resourceName );
-        e.printStackT
-ace    }
+        e.printStackTace    
+    }
+
+
+
+/**
+ * 
+ * feature 3: searching for resources
+ */
+public ArrayList <Resource> searchByName(String name){
+    // list to hold search result
+    ArrayList<Resource> results = new ArrayList<>();
+
+    // use bst search to find resource by name
+    Resource found = resourcesByName.search(name);
+
+    // add found resource to list
+    if(found != null){
+        results.add(found);
+    }
+    
+    // return result list
+    return results;
+
+}
+
+/** 
+ * 
+ */
+public ArrayList <Resource> searchByCategory(String category, String value){
+    // list to hold search result
+    ArrayList<Resource> results = new ArrayList<>();
+
+    // get index of category and value within category
+    int categoryIndex = getCategoryIndex(category);
+    int valueIndex = getValueForCategory(categoryIndex, value);
+
+    // if both indcies are valid
+    if(categoryIndex != -1 && valueIndex != -1){
+        //get resource list for the specific category and value
+        ArrayList<Resource> matchedResources = categories.Resources.get(categoryIndex).get(valueIndex);
+
+        // add the matching resources gto array list
+        results.addAll(matchedResources);
+    }
+
+    return results;
+
+}
+
+/**
+ * helppeerr!! returns the index of the category based on its name.
+ */
+private int getCategoryIndex(String category) {
+    switch (category.toLowerCase()) {
+        case "school": return SCHOOL_INDEX;
+        case "type": return TYPE_INDEX;
+        case "genre": return GENRE_INDEX;
+        case "cost": return COST_INDEX;
+        default: return -1;
+    }
+}
+
+
+/**
+ * helperrr! returns the index of a value within a category.
+ */
+private int getValueIndexForCategory(int categoryIndex, String value) {
+    switch (categoryIndex) {
+        case 0: return findSchoolIndex(value);
+        case 1: return findTypeIndex(value);
+        case 2: return findGenreIndex(value);
+        case 3: return findCostIndex(value);
+        default: return -1;
+    }
+}
+
+
+/**
+ * @param tag The tag to search for (e.g., "fli", "AAMP")
+ * @ return A list of resources that include this tag
+ */
+public ArrayList<Resource> searchByTag(String tag){
+    ArrayList<Resource> results = new ArrayList<>();
+
+    // get all resources in alphabetical order
+    ArrayList<Resource> allResources = new ArrayList<>();
+    resourcesByName.inOrderTraversal(resourcesByName.root, allResources);
+
+    // filter resources that have the desired tag
+    for(Resource resource: allResources){
+        if (resource.getTags().contains(tag.trim())){
+            results.add(resource);
+        }
+    }
+    return results;
+}
