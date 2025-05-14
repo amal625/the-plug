@@ -14,7 +14,6 @@ public interface ResourceBSTInterface<E>{
     // Comparator<E> comparator();//comparing, sorting
     // Comparator<Resource> byPrefixOrder(int r);
     // Comparator<Resource> byRating();
-    // Comparator<Resource> by 
     // Iterator<E> iterator(); //iteration
     void inOrderTraversal(Node node, ArrayList<Resource> resources); //in case we want to represent the data alphabetically 
     

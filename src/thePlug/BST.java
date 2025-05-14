@@ -7,9 +7,7 @@ import java.util.TreeSet;
  * It doubles the underlying array when it is full and halves the underlying
  * array when it is one-quarter full.
  * 
- * @author Lily Galvan
- * @author Kalyani Nair
- * @author Amal Diabor
+ * @author from CS 62 Class page
  *
  */
 public class BST<Key extends Comparable<Key>, Value> {

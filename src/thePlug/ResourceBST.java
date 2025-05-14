@@ -7,6 +7,7 @@ import java.util.Arrays;
 
 /**
  * 
+ * Custom Resource BST that does not use key and value but just has an object. Adapted from CS62 class BST.java file
  * 
  * @author Lily Galvan
  * @author Kalyani Nair
@@ -119,6 +120,9 @@ public class ResourceBST implements ResourceBSTInterface<Resource>{
     //     return null;
     // }
     
+    /*
+     * Executes in order traversal starting from node parameter and inputs nodes in order into arraylist parameter
+     */
     public void inOrderTraversal(Node node, ArrayList<Resource> resources){  //in case we want to represent the data alphabetically 
         if (node.right == null && node.left == null){
             resources.add(node.element);
@@ -137,6 +141,9 @@ public class ResourceBST implements ResourceBSTInterface<Resource>{
     }
 
 
+    /*
+     * testing ResourceBST and Resource classes
+     */
     public static void main(String[] args){
         // Resource r1 = new Resource("Apple", "pomona", "free", "item", "Mutual Aid", new ArrayList<String>(Arrays.asList("a", "b")), "None", "None"); // create new resource objects
         // Resource r2 = new Resource("Berry", "Claremont", "free","item", "Mutual Aid", new ArrayList<String>(Arrays.asList("a","b")), "None","None");

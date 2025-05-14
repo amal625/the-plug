@@ -3,11 +3,11 @@ import java.util.*;
 import java.util.ArrayList;
 import java.io.*;
 
-
-
 /**
  * Plug Manager class manages all resource data and implements the four main features 
  * upload,remove,search,and rate resources.
+ * 
+ * authors: Lily, Amal, and Kalyani
  */
 public class PlugManager {
     protected ResourceBST resourcesByName; // BST w/ resource names as keys
@@ -31,10 +31,16 @@ public class PlugManager {
         initializeCategories();
     }
 
+    /*
+     * getter for categoriesResources for main usage
+     */
     private ArrayList<ArrayList<ArrayList<Resource>>> getCategoriesResources(){
         return this.categoriesResources;
     }
 
+    /*
+     * Method to print categoriesResources arraylist of arraylist of arraylists more methodologically. Not used in actual user interaction
+     */
     private void print(){
         ArrayList<ArrayList<ArrayList<Resource>>> categorizedResources = this.getCategoriesResources();
         String[] cats = {"School", "Cost", "Type", "Genre"};
@@ -46,11 +52,12 @@ public class PlugManager {
         ArrayList<ArrayList<String>> subCats = new ArrayList<>(Arrays.asList(school_names, cost_names, type_names, genre_names));
 
 
-        for (int i = 0; i < 4; i++){
+        for (int i = 0; i < 4; i++){// loops through subcats/outer categories
             System.out.println(cats[i] + " subcategories: \n____________________________________\n");
-            for (int j = 0; j<categorizedResources.get(i).size(); j++){
+
+            for (int j = 0; j<categorizedResources.get(i).size(); j++){// loops through all inner categories
                 System.out.println("\n\n************" + subCats.get(i).get(j) + " arrayList: \n");
-                for (int k = 0; k < categorizedResources.get(i).get(j).size(); k++){
+                for (int k = 0; k < categorizedResources.get(i).get(j).size(); k++){ // loops through all resources in that inner category's list and prints them
                     if (k == 136){
                         System.out.println("at 136");
                     }
@@ -92,37 +99,40 @@ public class PlugManager {
     }
     
     /**
-     * Load resources from CSV file
+     * Load resources from CSV file into appropraite data structures
      */
-    // TODO: Kalyani add comments
     private void loadResources() {
         try{
-            BufferedReader reader = new BufferedReader (new FileReader (resourceFile));
+            BufferedReader reader = new BufferedReader (new FileReader (resourceFile)); // reads from Data CSV
             String line; 
             reader.readLine(); // skips first line w/titles of columns
 
-            while((line = reader.readLine()) != null){
+            while((line = reader.readLine()) != null){// while more lines in CSV
                 String[] resource = line.split(","); 
 
                 String threeSubstr = line.substring(line.length()-3, line.length());
                 String twoSubstr = line.substring(line.length()-2, line.length());
                 String[] oldResource = resource;
-                if (threeSubstr.length() == 3 && threeSubstr.equals(",,,")){
+                if (threeSubstr.length() == 3 && threeSubstr.equals(",,,")){ // if line ends in three commas (last values are empty)
                     resource = new String[resource.length + 2];
-                    for (int i = 0; i<oldResource.length; i++){
+
+                    for (int i = 0; i<oldResource.length; i++){ //manually add appropriate amount of extra empty strings to array
                         resource[i] = oldResource[i];
                     }
+
                     resource[oldResource.length] = "";
                     resource[oldResource.length + 1] = "";
 
-                } else if (twoSubstr.length() == 2 && twoSubstr.equals(",,")){
+                } else if (twoSubstr.length() == 2 && twoSubstr.equals(",,")){// if line ends in two commas (last values are empty)
                     resource = new String[resource.length + 1];
-                    for (int i = 0; i<oldResource.length; i++){
+
+                    for (int i = 0; i<oldResource.length; i++){ //manually add appropriate amount of extra empty strings to array
                         resource[i] = oldResource[i];
                     }
                     resource[oldResource.length] = "";
                 }
 
+                // correctly label each column of csv to resource variables
                 String name = resource[0];
                 String school = resource[1];
                 String cost = resource[2];
@@ -130,16 +140,16 @@ public class PlugManager {
                 String genre = resource[4];
 
                 String contact = resource[5];
-                  if (contact.equals("")){
+                  if (contact.equals("")){ // if no contact
                     contact = "None";
                 }
 
                 String lastActive = resource[6];
-                if (lastActive.equals("")){
+                if (lastActive.equals("")){ // if no last active
                     lastActive = "None";
                 }
                 
-                ArrayList<String> tags = new ArrayList<>();
+                ArrayList<String> tags = new ArrayList<>(); //loop through all tags and add them all to a tags arraylist
                 if (resource.length > 7 && resource[7] != null) { 
                     for (String tag : resource[7].split(";")) {
                         if (!tag.trim().isEmpty()) {
@@ -148,11 +158,11 @@ public class PlugManager {
                     }
                 }
 
-                Resource resourceObject = new Resource(name, school, cost, type, genre, tags, lastActive, contact);
-                //add to BST :) 
-                resourcesByName.insert(resourceObject);
+                Resource resourceObject = new Resource(name, school, cost, type, genre, tags, lastActive, contact); // create new resource object
+                resourcesByName.insert(resourceObject); //add to BST :) 
+
                 
-                for (String tag : tags){ //comeback!!!
+                for (String tag : tags){ // insert resource into all tags BST
                     resourcesByTag.insert(resourceObject);
                 }
 
@@ -207,6 +217,7 @@ public class PlugManager {
      */
     public boolean addResource(Resource resource){
         if (resourcesByName.search(resource.getName()) != null) {
+            System.out.println("\nA resource with this name already exists, try searching for it and seeing if it is your resource!");
             return false; // Already exists
         }
         else{
@@ -249,12 +260,12 @@ public class PlugManager {
         Scanner scanner = new Scanner(System.in);
 
         // get users resource naame
-        System.out.println("Enter the name of the resource: ");
+        System.out.println("\nEnter the name of your new resource: ");
         String name = scanner.nextLine();
 
         // outline list of school optios 
         String [] schools = {"Claremont McKenna", "Harvey Mudd", "Pitzer", "Pomona", "Scripps", "7C"};
-        System.out.println("Select the school: ");
+        System.out.println("\nIs this new resource only availible for students from a specific school?: ");
         for (int  i = 0; i < schools.length; i++){
              System.out.println((i + 1) + ". " + schools[i]);
         }
@@ -263,7 +274,7 @@ public class PlugManager {
 
         // outline list of cost options
         String[] costs = {"Free", "1-10", "10-20", "20-30", "30+"};
-        System.out.println("Select the cost");
+        System.out.println("\nSelect the cost of your resource for a student");
         for (int  i = 0; i < costs.length; i++){
              System.out.println((i + 1) + ". " + costs[i]);
         }
@@ -272,7 +283,7 @@ public class PlugManager {
 
         // outline list of type options
         String[] types = {"Activity", "Event", "Fare Reduction", "Grant/Funding", "Item", "Organizational", "Service" };
-        System.out.println("Select the type: ");
+        System.out.println("\nSelect the type of resource: ");
         for (int i = 0; i < types.length; i++){
             System.out.println((i + 1) + ". " + types[i]);
         }
@@ -281,7 +292,7 @@ public class PlugManager {
 
         // outline list of genre options
         String[] genres = {"Academic", "Career", "Entertainment", "Food","Healthcare and Wellness", "Housing", "Mutual Aid", "Other", "Religious", "Supplies", "Sustainabilty", "Transportation" };
-        System.out.println("Select the genre: ");
+        System.out.println("\nSelect the genre of this resource: ");
         for (int i = 0; i < genres.length; i++){
             System.out.println((i + 1) + ". " + genres[i]);
         }
@@ -289,17 +300,16 @@ public class PlugManager {
         String genre = genres[genreIndex];
 
         // get user to input tags seprated by commas
-        System.out.println("Enter tags (comma separated, e.x., fli, AAMP, disability resources): ");
+        System.out.println("\nEnter tags for this resource (comma separated, e.x., fli, AAMP, disability resources): ");
         String tagInput = scanner.nextLine();
 
         // get user to input contact
-        System.out.println("Enter a contact for this resource (first and last name, a website, a phone number, etc.), if you don't have a contact, enter \"None\": ");
+        System.out.println("\nEnter a contact for this resource (first and last name, a website, a phone number, etc.), if you don't have a contact, enter \"None\": ");
         String contactInput = scanner.nextLine();
 
         // get user to input lastActive
-        System.out.println("Enter when this resource was last active/used, (ex. \"current\", 2025, 5/5/2025, etc.), if you don't have a last active date, enter \"None\": ");
+        System.out.println("\nEnter when this resource was last active/used, (ex. \"current\", 2025, 5/5/2025, etc.), if you don't have a last active date, enter \"None\": ");
         String lastActive = scanner.nextLine();
-
 
         // create reosurce object w user collected input
         ArrayList<String> tags = new ArrayList<>(Arrays.asList(tagInput.split(",")));
@@ -469,7 +479,7 @@ public class PlugManager {
     public void userRequestResourceRemoval(){
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("Enter the name of the resource you want to request for removal");
+        System.out.print("\nEnter the name of the resource to request for removal: ");
         String resourceName = scanner.nextLine().trim();
 
         if(resourceName.isEmpty()){
@@ -484,10 +494,10 @@ public class PlugManager {
         //increment remove request count
         int currentCount = resource.getRemoveRequests();
         resource.setRemoveRequests(currentCount + 1);
-        System.out.println("Remove request submitted. Current count:" + resource.getRemoveRequests());
+        System.out.println("Remove request submitted. Current removal request count for that resource: " + resource.getRemoveRequests());
 
         if (resource.getRemoveRequests() >= removalCount){
-            System.out.println("Maximum removal requests reached.Removing resource from system..");
+            System.out.println("Maximum removal requests reached. Removing resource from system...");
             if (removeResourceFromDataStructures(resource)){
                 System.out.println("Resource successfully removed.");
             }else{
@@ -673,11 +683,11 @@ public class PlugManager {
         plugManager.loadResources();
 
         Scanner user = new Scanner(System.in);
-        System.out.println("Hi! Welcome to The Plug. What would you like to do first?\n");
+        System.out.println("\nHi! Welcome to The Plug. What would you like to do first?");
 
 
         while (true){
-            System.out.println("Main Menu-- Enter the number corresponding to what action you'd like to complete: ");
+            System.out.println("\nMain Menu-- Enter the number corresponding to what action you'd like to complete: ");
             String [] options = {"Upload a Resource", "Search for a Resource", "Request Removal of a Resource", "Rate a Resource", "Exit The Plug"};
             for (int  i = 0; i < options.length; i++){
                 System.out.println((i + 1) + ". " + options[i]);
@@ -690,8 +700,8 @@ public class PlugManager {
         
             } else if (menuIndex == 1){ // user wants to search for a resource
                 // Scanner scanner = new Scanner(System.in);
-                String [] searchOptions = {"Search by name of a Resource", "Search by categorization", "Search by a tag", "Search for the top rated resources"};
-                System.out.println("Please enter the number corresponding to which type of search you'd like to do: ");
+                String [] searchOptions = {"Search by name of a resource", "Search by categorization", "Search by a tag", "Search for the top rated resources"};
+                System.out.println("\nPlease enter the number corresponding to which type of search you'd like to do: ");
                 for (int  i = 0; i < searchOptions.length; i++){
                     System.out.println((i + 1) + ". " + searchOptions[i]);
                 }
@@ -700,12 +710,17 @@ public class PlugManager {
                 String searchOption = options[searchIndex];
 
                     if (searchIndex == 0){ //Search by name of a Resource
-                        System.out.println("You're searching by name, please enter the name of the resource you'd like to find: ");
+                        System.out.println("\nYou're searching by name, please enter the name of the resource you'd like to find: ");
                         String userName = user.nextLine();                    
                         ArrayList<Resource> nameResults = plugManager.searchByName(userName);
-                        System.out.println("\n\nHere are the search results: ");
-                        for(Resource res: nameResults){
-                            System.out.println(res);
+                        
+                        if (nameResults.size()==0){
+                            System.out.println("\nSorry, no results found for this search.");
+                        }else{
+                            System.out.println("\nHere are the search results: ");
+                            for(Resource res: nameResults){
+                                System.out.println(res);
+                            }
                         }
                         
                     } else if(searchIndex == 1){ //Search by categorization
@@ -717,52 +732,100 @@ public class PlugManager {
                         
                         ArrayList<ArrayList<String>> subCats = new ArrayList<>(Arrays.asList(school_names, cost_names, type_names, genre_names));
                         
-                
-                        // return subCats.get(categoryIndex).indexOf(value);
                         
-                        System.out.println("You're searching by category, please choose from one of the 4 options by typing the corresponding number: \n");
-                        String [] bigCategories = {"school", "cost", "type", "genre"};
+                        System.out.println("\nYou're searching by category, please choose from one of the 4 options by typing the corresponding number: \n");
+                        String[] bigCategories = {"school", "cost", "type", "genre"};
+                        Boolean[] filtered = {false, false, false, false};
                         
-                        for (int  i = 0; i < bigCategories.length; i++){
+                        for (int  i = 0; i < bigCategories.length; i++){ // print category options
                             System.out.println((i + 1) + ". " + bigCategories[i]);
                         }
                         int bigCatIndex = plugManager.getValidatedIndex(user, bigCategories.length);
+                        filtered[bigCatIndex] = true;
                         String bigCatString = bigCategories[bigCatIndex];
                         ArrayList<String> innerCategory = subCats.get(bigCatIndex);
-
                         
                         System.out.println("Please choose a subcategory by its corresponding number to see resources: \n");
                         for (int j = 0; j < innerCategory.size(); j++){
                             System.out.println((j + 1) + ". " + innerCategory.get(j));
                         }
-                        int innerCatIndex = plugManager.getValidatedIndex(user, bigCategories.length);
+                        int innerCatIndex = plugManager.getValidatedIndex(user, innerCategory.size());
                         String subCatFinal = innerCategory.get(innerCatIndex);
                         ArrayList<Resource> categoryResults = plugManager.searchByCategory(bigCatString, subCatFinal);
-                        
-                        for(Resource res: categoryResults){
-                            System.out.println("------------------------------------");
-                            System.out.println(res);
+
+                        /////
+                        while(true){ // allows user to filter by another category
+                            System.out.print("\nWe have filtered by that category.\nWould you like to filter by another category to see only resources that were in your previous category and a new one?\nEnter \"yes\" if so or type anything else if not so that you can to see your search results: ");
+                            if (user.nextLine().equals("yes")){
+                                System.out.println("Please choose a new subcategory by its corresponding number to see resources, only enter a number corresponding to a new category below: \n");
+                                for (int  i = 0; i < bigCategories.length; i++){ // print category options
+                                    if (filtered[i]){
+                                        continue;
+                                    }
+                                    else{
+                                        System.out.println((i + 1) + ". " + bigCategories[i]);
+                                    }
+                                }
+                                
+                                bigCatIndex = plugManager.getValidatedIndex(user, bigCategories.length);
+                                filtered[bigCatIndex] = true;
+                                bigCatString = bigCategories[bigCatIndex];
+                                innerCategory = subCats.get(bigCatIndex);
+    
+                                System.out.println("Please choose a subcategory by its corresponding number to see resources: \n");
+                                for (int j = 0; j < innerCategory.size(); j++){
+                                    System.out.println((j + 1) + ". " + innerCategory.get(j));
+                                }
+
+                                innerCatIndex = plugManager.getValidatedIndex(user, innerCategory.size());
+                                subCatFinal = innerCategory.get(innerCatIndex);
+                                categoryResults = plugManager.searchByAnotherCategory(bigCatString, subCatFinal, categoryResults);
+
+                            } else {
+                                break;
+                            }
                         }
+                        //////
+                        
+                        if (categoryResults.size() == 0){
+                            System.out.println("Sorry, no resources found!");
+                        }
+                        else{}
+                            System.out.println("\nHere are your search results: \n");
+                            for(Resource res: categoryResults){
+                                System.out.println("------------------------------------");
+                                System.out.println(res);
+                            }
                         
                     } else if(searchIndex == 2){ //Search by a tag
-                        System.out.println("Searching by tags. Please enter a tag to see all resouces with that tag: ");
+                        System.out.println("\nSearching by tags. Please enter a tag to see all resouces with that tag: ");
                         String userTag = user.nextLine();
                         ArrayList<Resource> tagsResults = plugManager.searchByTag(userTag);
 
-                        for(Resource res: tagsResults){
-                            System.out.println("------------------------------------");
-                            System.out.println(res);
+                        if (tagsResults.size() == 0){
+                            System.out.println("Sorry, we have no resources with the given tag.");
+                        } else {
+                            System.out.println("\nHere are the resources with the given tag: ");
+                            for(Resource res: tagsResults){
+                                System.out.println("------------------------------------");
+                                System.out.println(res);
+                            }
                         }
                         
                     }
+
                     else{ // Search for the top rated resources
-                        System.out.println("You're now searching for top rated resources... Type in how many of the top rated resources you'd like to see: ");
+                        System.out.println("\nYou're now searching for top rated resources. Type in how many of the top rated resources you'd like to see: ");
                         int numResources = Integer.parseInt(user.nextLine());
                         System.out.println("Thanks! Here are the " + numResources + " top rated resources:\n");
                         ArrayList<Resource> topRated = plugManager.getTopRatedResources(numResources);
                         
-                        for (int x = 0;  x < topRated.size(); x++){
-                            System.out.println(x + 1 + ". " + topRated.get(x));
+                        if (topRated.size() == 0){
+                            System.out.println("Sorry, there are currently no top rated resources.");
+                        } else {
+                            for (int x = 0;  x < topRated.size(); x++){ // loop through top rated resources and print them
+                                System.out.println(x + 1 + ". " + topRated.get(x));
+                            }
                         }
 
                     }
@@ -772,16 +835,16 @@ public class PlugManager {
                 plugManager.userRequestResourceRemoval();  // Allow user to request removal
                 
             } else if(menuIndex == 3){ // user wants to rate a resource
-                System.out.println("~~~~Welcome to the Plug Rate System~~~~~"); 
+                System.out.println("\n~~~~Welcome to the Plug Rate System~~~~~"); 
                 while(true){
-                    System.out.println("Choose an option: \n");
-                    System.out.println("1. Rate a Resource \n");
-                    System.out.println("2. Exit \n");
-                    
+                    System.out.println("\n1. Rate a Resource");
+                    System.out.println("2. Exit to Main Menu");
+                    System.out.print("\nType in a number corresponding to an option above: ");
+
                     String choice = user.nextLine();
                 
                     if (choice.equals("1")){ // rating the resource is if the user chooses 1
-                        System.out.println("Enter the name of the resource:");
+                        System.out.print("Enter the name of the resource you'd like to rate: ");
                         String name = user.nextLine();
                         System.out.print("Enter your rating (1.0-5.0): ");
                         double rating;
@@ -811,6 +874,7 @@ public class PlugManager {
                 }
             }
             else if (menuIndex == 4){
+                System.out.println("\nThanks for using the plug!\n");
                 break;
             }
         }

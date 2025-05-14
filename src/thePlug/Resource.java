@@ -6,6 +6,8 @@ import java.util.Comparator;
 
 /**
  * Resource class defines a new Resource consisting of a name, school, cost, type, genre, tags, lastActive, and contact
+ * 
+ * @Authors: Amal Diabor, Lily Galvan, Kalyani Nair
  */
 public class Resource implements Comparable<Resource>{
     protected String name;
@@ -110,6 +112,7 @@ public class Resource implements Comparable<Resource>{
     public String getContact(){
         return this.contact;
     }
+
     /**
      * will return the number of remove requests 
      * @return total removeRequests
@@ -117,6 +120,7 @@ public class Resource implements Comparable<Resource>{
     public int getRemoveRequests(){
         return this.removeRequests;
     }
+
     /**
      * get the rating ( should we do an average here of all ratings)
      * @return rating
@@ -128,9 +132,13 @@ public class Resource implements Comparable<Resource>{
         return rate/numRatings;
     }   
     
+    /**
+     * setting a name by the user 
+     */
     public void setName(String newName){
         this.name = newName;
     }
+
     /**
      * setting a cost by the user 
      */
@@ -158,6 +166,7 @@ public class Resource implements Comparable<Resource>{
     public void setRemoveRequests(int newRemoveRequests){
         this.removeRequests = newRemoveRequests;
     }
+
     /**
      * will allow rating for the user
      * @param newRate
@@ -172,23 +181,39 @@ public class Resource implements Comparable<Resource>{
         numRatings++;
     }
     
+    /*
+     * Overrides default compareTo method to compare two resources by their names alphabetically
+     */
+    @Override
     public int compareTo(Resource a){
         return this.getName().compareTo(a.getName());
     }
 
+    /*
+     * compare by type method to see which school is alphabetically greater
+     */
     public int comparebyType(Resource a, Resource b){
         return a.type.compareTo(b.type);
     }
 
+    /*
+     * compare by school method to see which school is alphabetically greater
+     */
     public int comparebySchool(Resource a, Resource b){
         return a.school.compareTo(b.school);
     }
 
+    /*
+     * custom comparator by rating of resource for priority queue implmenetation
+     */
     public static Comparator<Resource> compareByRating(){
         return (Resource r1, Resource r2) -> Double.compare(r1.getRate(), r2.getRate());
     }
  
-    
+
+    /*
+     * compare resources by their tags in order of their appearance
+     */
     public int comparebyTags(Resource a, Resource b){ //put a pin in it come back 
         for (int i = 0; i < Math.min(a.tags.size(), b.tags.size()); i++) { 
             int comparison = a.tags.get(i).compareTo(b.tags.get(i)); 
@@ -200,7 +225,9 @@ public class Resource implements Comparable<Resource>{
     }
 
 
-    
+    /*
+     * formats and prints each instance variable and all relevant information about a resource for the user
+     */
     public String toString(){
         StringBuilder retString = new StringBuilder("");
         retString.append("Resource name: " + this.getName());
