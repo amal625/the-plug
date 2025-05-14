@@ -5,6 +5,14 @@ import java.util.TreeSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * 
+ * 
+ * @author Lily Galvan
+ * @author Kalyani Nair
+ * @author Amal Diabor
+ *
+ */
 public class ResourceBST implements ResourceBSTInterface<Resource>{
     private Node root; // Root of BST
     ArrayList<Resource> resources = new ArrayList<>();

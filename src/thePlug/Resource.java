@@ -5,7 +5,7 @@ import java.util.Comparator;
 
 
 /**
- * Resource class defines a new Resource consisting of a name, schooll, cost, type, genre, tags, lastActive, and contact
+ * Resource class defines a new Resource consisting of a name, school, cost, type, genre, tags, lastActive, and contact
  */
 public class Resource implements Comparable<Resource>{
     protected String name;
@@ -210,7 +210,7 @@ public class Resource implements Comparable<Resource>{
         retString.append("\nGenre: " + this.getGenre());
         
         if (this.getTags().size() != 0){
-            retString.append("\nTags " + this.getTags());
+            retString.append("\nTags: " + this.getTags());
         }
         if (!this.getlastActive().equals("None")){
             retString.append("\nLast Active: " + this.getTags());

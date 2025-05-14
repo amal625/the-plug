@@ -1,6 +1,17 @@
 package thePlug;
 import java.util.TreeSet;
 
+
+/**
+ * 
+ * It doubles the underlying array when it is full and halves the underlying
+ * array when it is one-quarter full.
+ * 
+ * @author Lily Galvan
+ * @author Kalyani Nair
+ * @author Amal Diabor
+ *
+ */
 public class BST<Key extends Comparable<Key>, Value> {
     private Node root; // Root of BST
 

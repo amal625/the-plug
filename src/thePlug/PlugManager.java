@@ -12,7 +12,6 @@ import java.io.*;
 public class PlugManager {
     protected ResourceBST resourcesByName; // BST w/ resource names as keys
     protected ResourceBST resourcesByTag; // BST to search by tags
-    private ResourceArrayList <Resource> categorizedResources; // nested arraylists for organization by category
     private ArrayList<ArrayList<ArrayList<Resource>>> categoriesResources = new ArrayList<>(4);
     private static final int removalCount = 5; // Number of removal requests before resource is removed
     private static final String resourceFile = "src/thePlug/Plug_Data_CSV.csv"; // file storing all resources
@@ -28,11 +27,8 @@ public class PlugManager {
         resourcesByName = new ResourceBST();
         resourcesByTag = new ResourceBST();
 
-        categorizedResources = new ResourceArrayList<>(4); // intialize with categories: school, type, genre, ect.
         ArrayList<ArrayList> categoriesResources = new ArrayList<ArrayList>(4);
         initializeCategories();
-        // loadResources();
-
     }
 
     private ArrayList<ArrayList<ArrayList<Resource>>> getCategoriesResources(){
@@ -176,7 +172,7 @@ public class PlugManager {
                 categoriesResources.get(COST_INDEX).get(cost_names.indexOf(cost)).add(resourceObject);
 
 
-                // add to cost bucket
+                // add to type bucket
                 ArrayList type_names = new ArrayList<>(Arrays.asList("Activity", "Event", "Fare Reduction", "Grant/Funding", "Item", "Organizational", "Service"));
                 if (type_names.indexOf(type) == -1){
                     throw new Error("invalid input");
@@ -337,7 +333,7 @@ public class PlugManager {
                 // make sure inout is valid
                 if (choice >= 1 && choice <= max){
                     // convert to 0 based index for arrays
-                    return choice -1;
+                    return choice - 1;
                 } else {
                     System.out.println("Invalid selection. Please choose a number from the list. ");
                 }    
@@ -378,14 +374,11 @@ public class PlugManager {
             if (resource.getRemoveRequests() >= removalCount) {
                 if (removeResourceFromDataStructures(resource)) {
                     System.out.println("Resource " + resourceName + " removed after reaching threshold");
-                    saveResources();
                     return true;
                 }
             }
-            
-            // Update the count
-            saveResources();
             return false;
+
         } catch (Exception e) {
             System.err.println("Error processing removal request for: " + resourceName);
             e.printStackTrace();
@@ -461,52 +454,6 @@ public class PlugManager {
     }
 
     /**
-     * Saves resources to file
-     */
-    private void saveResources() {
-        try {
-            // Create a BufferedWriter to write to the file
-            BufferedWriter writer = new BufferedWriter(new FileWriter(resourceFile));
-            
-            // Write header row
-            writer.write("Name,School,Cost,Type,Genre,Contact,LastActive,Tags\n");
-            
-            // Collect all resources from BST
-            ArrayList<Resource> allResources = new ArrayList<>();
-            collectAllResources(resourcesByName.getRoot(), allResources);
-            
-            // Write each resource to the file
-            for (Resource resource : allResources) {
-                StringBuilder line = new StringBuilder();
-                line.append(resource.getName()).append(",");
-                line.append(resource.getSchool()).append(",");
-                line.append(resource.getCost()).append(",");
-                line.append(resource.getType()).append(",");
-                line.append(resource.getGenre()).append(",");
-                line.append(resource.getContact()).append(",");
-                line.append(resource.getlastActive()).append(",");
-                
-                // Join tags with semicolons
-                ArrayList<String> tags = resource.getTags();
-                if (tags != null && !tags.isEmpty()) {
-                    for (int i = 0; i < tags.size(); i++) {
-                        line.append(tags.get(i));
-                        if (i < tags.size() - 1) {
-                            line.append(";");
-                        }
-                    }
-                }
-                
-                writer.write(line.toString() + "\n");
-            }
-            
-            writer.close();
-        } catch (IOException e) {
-            System.err.println("Error saving resources: " + e.getMessage());
-        }
-    }
-
-    /**
      * Helper method to collect all resources from the BST
      * @param node Current node
      * @param resources List to store resources
@@ -547,7 +494,6 @@ public class PlugManager {
                 System.out.println("Error: Could not remove resource.");
             }
 
-            saveResources();//save updated state to file
         }
     }
 
@@ -558,7 +504,6 @@ public class PlugManager {
     /**
      * feature 3: searching for resources
      */
-    // TODO: maybe make it so that it can search by prefixes?
     public ArrayList <Resource> searchByName(String name){
         // list to hold search result
         ArrayList<Resource> results = new ArrayList<>();
@@ -601,6 +546,32 @@ public class PlugManager {
         return results;
 
     }
+
+    public ArrayList<Resource> searchByAnotherCategory(String category, String value, ArrayList<Resource> currentResources){
+        // list to hold search result
+        ArrayList<Resource> updatedResults = new ArrayList<>();
+
+        // get index of category and value within category
+        int categoryIndex = getCategoryIndex(category);
+        int valueIndex = getValueIndexForCategory(categoryIndex, value);
+
+        // if both indices are valid
+        if(categoryIndex != -1 && valueIndex != -1){
+            //get resource list for the specific category and value
+            ArrayList<Resource> matchedResources = categoriesResources.get(categoryIndex).get(valueIndex);
+
+            for (Resource resource: currentResources){
+                if (matchedResources.indexOf(resource) != (-1)){
+                    updatedResults.add(resource);
+                }
+            }
+        }
+
+        return updatedResults;
+}
+
+
+
 
     /**
      * helper for searchByCategory()! returns the index of the category based on its name.
@@ -666,7 +637,7 @@ public class PlugManager {
             return false;
         }
         resource.rate(rating);
-        saveResources(); //saves the updated average rating to disk
+        System.out.println("The new rating for this resource is " + resource.getRate());
         return true;
     }
 
@@ -700,187 +671,151 @@ public class PlugManager {
     public static void main(String[] args){
         PlugManager plugManager = new PlugManager();
         plugManager.loadResources();
+
+        Scanner user = new Scanner(System.in);
+        System.out.println("Hi! Welcome to The Plug. What would you like to do first?\n");
+
+
+        while (true){
+            System.out.println("Main Menu-- Enter the number corresponding to what action you'd like to complete: ");
+            String [] options = {"Upload a Resource", "Search for a Resource", "Request Removal of a Resource", "Rate a Resource", "Exit The Plug"};
+            for (int  i = 0; i < options.length; i++){
+                System.out.println((i + 1) + ". " + options[i]);
+            }
+            int menuIndex = plugManager.getValidatedIndex(user, options.length);
+            String option = options[menuIndex];
+            
+            if (menuIndex == 0){ // user wants to upload
+                plugManager.userAddResource();
         
-        plugManager.rateResource("Book Room",5.0);
-        plugManager.rateResource("Book Room",4.0);
-        plugManager.rateResource("Free Room",4.0);
-        plugManager.rateResource("Wellness Machine", 3.5);
-        plugManager.rateResource("Greenbox Program",5.0);
-        
+            } else if (menuIndex == 1){ // user wants to search for a resource
+                // Scanner scanner = new Scanner(System.in);
+                String [] searchOptions = {"Search by name of a Resource", "Search by categorization", "Search by a tag", "Search for the top rated resources"};
+                System.out.println("Please enter the number corresponding to which type of search you'd like to do: ");
+                for (int  i = 0; i < searchOptions.length; i++){
+                    System.out.println((i + 1) + ". " + searchOptions[i]);
+                }
+                
+                int searchIndex = plugManager.getValidatedIndex(user, searchOptions.length);
+                String searchOption = options[searchIndex];
 
-        System.out.println(plugManager.getTopRatedResources(4));
+                    if (searchIndex == 0){ //Search by name of a Resource
+                        System.out.println("You're searching by name, please enter the name of the resource you'd like to find: ");
+                        String userName = user.nextLine();                    
+                        ArrayList<Resource> nameResults = plugManager.searchByName(userName);
+                        System.out.println("\n\nHere are the search results: ");
+                        for(Resource res: nameResults){
+                            System.out.println(res);
+                        }
+                        
+                    } else if(searchIndex == 1){ //Search by categorization
+                    
+                        ArrayList<String> school_names = new ArrayList<>(Arrays.asList("Claremont McKenna", "Harvey Mudd", "Pitzer", "Pomona", "Scripps", "7c"));
+                        ArrayList<String> cost_names = new ArrayList<>(Arrays.asList("Free", "1-10", "10-20", "20-30", "30+"));
+                        ArrayList<String> type_names = new ArrayList<>(Arrays.asList("Activity", "Event", "Fare Reduction", "Grant/Funding", "Item", "Organizational", "Service"));
+                        ArrayList<String> genre_names = new ArrayList<>(Arrays.asList("Academic", "Career", "Entertainment", "Food", "Healthcare and Wellness", "Housing", "Mutual Aid", "Other", "Religious", "Supplies", "Sustainability", "Transportation"));
+                        
+                        ArrayList<ArrayList<String>> subCats = new ArrayList<>(Arrays.asList(school_names, cost_names, type_names, genre_names));
+                        
+                
+                        // return subCats.get(categoryIndex).indexOf(value);
+                        
+                        System.out.println("You're searching by category, please choose from one of the 4 options by typing the corresponding number: \n");
+                        String [] bigCategories = {"school", "cost", "type", "genre"};
+                        
+                        for (int  i = 0; i < bigCategories.length; i++){
+                            System.out.println((i + 1) + ". " + bigCategories[i]);
+                        }
+                        int bigCatIndex = plugManager.getValidatedIndex(user, bigCategories.length);
+                        String bigCatString = bigCategories[bigCatIndex];
+                        ArrayList<String> innerCategory = subCats.get(bigCatIndex);
+
+                        
+                        System.out.println("Please choose a subcategory by its corresponding number to see resources: \n");
+                        for (int j = 0; j < innerCategory.size(); j++){
+                            System.out.println((j + 1) + ". " + innerCategory.get(j));
+                        }
+                        int innerCatIndex = plugManager.getValidatedIndex(user, bigCategories.length);
+                        String subCatFinal = innerCategory.get(innerCatIndex);
+                        ArrayList<Resource> categoryResults = plugManager.searchByCategory(bigCatString, subCatFinal);
+                        
+                        for(Resource res: categoryResults){
+                            System.out.println("------------------------------------");
+                            System.out.println(res);
+                        }
+                        
+                    } else if(searchIndex == 2){ //Search by a tag
+                        System.out.println("Searching by tags. Please enter a tag to see all resouces with that tag: ");
+                        String userTag = user.nextLine();
+                        ArrayList<Resource> tagsResults = plugManager.searchByTag(userTag);
+
+                        for(Resource res: tagsResults){
+                            System.out.println("------------------------------------");
+                            System.out.println(res);
+                        }
+                        
+                    }
+                    else{ // Search for the top rated resources
+                        System.out.println("You're now searching for top rated resources... Type in how many of the top rated resources you'd like to see: ");
+                        int numResources = Integer.parseInt(user.nextLine());
+                        System.out.println("Thanks! Here are the " + numResources + " top rated resources:\n");
+                        ArrayList<Resource> topRated = plugManager.getTopRatedResources(numResources);
+                        
+                        for (int x = 0;  x < topRated.size(); x++){
+                            System.out.println(x + 1 + ". " + topRated.get(x));
+                        }
+
+                    }
+
+                
+            } else if(menuIndex == 2){ // user wants to request removal of a resource
+                plugManager.userRequestResourceRemoval();  // Allow user to request removal
+                
+            } else if(menuIndex == 3){ // user wants to rate a resource
+                System.out.println("~~~~Welcome to the Plug Rate System~~~~~"); 
+                while(true){
+                    System.out.println("Choose an option: \n");
+                    System.out.println("1. Rate a Resource \n");
+                    System.out.println("2. Exit \n");
+                    
+                    String choice = user.nextLine();
+                
+                    if (choice.equals("1")){ // rating the resource is if the user chooses 1
+                        System.out.println("Enter the name of the resource:");
+                        String name = user.nextLine();
+                        System.out.print("Enter your rating (1.0-5.0): ");
+                        double rating;
+                        try{
+                            rating = Double.parseDouble(user.nextLine());
+                        }catch(NumberFormatException e){
+                            System.out.println("Invalid input. Rating must be a numebr!!");
+                            user.close();
+                            return;
+                        }
 
 
-        ArrayList<String> tags = new ArrayList<> (Arrays.asList("FGLI","health"));
-        ArrayList<String> tags1 = new ArrayList<> (Arrays.asList("aamp", "health"));
-
-        Resource r1 = new Resource("Health Center", "Pomona", "Free", "Service", "Healthcare and Wellness", tags, "None", "None");
-
-        // plugManager.addResource(r1);
-        // System.out.println("Testing resource removal");
-
-        // for(int i = 1; i <= 5; i++){
-        //     System.out.println(r1.getRemoveRequests());
-        //     System.out.println("request num" + i);
-        //     System.out.println(plugManager.requestRemoval("Health Center"));
-        // }
-
-        // System.out.println("removing the same resource again");
-        // boolean secondRemove = plugManager.requestRemoval("Health Center");
-        // System.out.println("re-remove result:" + (secondRemove));
-
-        
-        // Resource r2 = new Resource("STEM Internship Fund", "Harvey Mudd", "10-20", "Grant/Funding", "Career",tags1, "None", "None" );
-        // Resource r3 = new Resource("7C Mindfulness Circle", "7C", "Free", "Event", "Healthcare and Wellness", tags, "None", "None");
-
-        // plugManager.addResource(r1);
-        // plugManager.addResource(r2);
-        // plugManager.addResource(r3);
-
-        // System.out.println("Searching by name");
-        // ArrayList<Resource> nameResults = plugManager.searchByName("Health Center");
-        // for(Resource res: nameResults){
-        //     System.out.println(res.getName());
-        // }
-        
-        // System.out.println("Searching by category");
-        // ArrayList<Resource> categoryResults = plugManager.searchByCategory("Genre", "Healthcare and Wellness");
-        // for(Resource res: categoryResults){
-        //     System.out.println(res.getName() + ", Genre: " + res.getGenre());
-        // }
-
-        // System.out.println("Searching by tags");
-        // ArrayList<Resource> tagsResults = plugManager.searchByTag("FGLI");
-        // for(Resource res: tagsResults){
-        //     System.out.println(res.getName() + " Tag: " + res.getTags());
-        // }
-        // plugManager.print();
-        
-        
-        // to test upload user resource
-        // plugManager.userAddResource();
-
-        // // make sure something was added to bst???
-        // System.out.println("Search for your resource by name to confirm:");
-        // Scanner scanner = new Scanner(System.in);
-        // String searchName = scanner.nextLine();
-        // Resource found = plugManager.resourcesByName.search(searchName);
-
-        // if (found != null) {
-        //     System.out.println("Resource found: " + found.getName());
-        //     System.out.println(found);
-        // } else {
-        //     System.out.println(" Resource not found.");
-        // }
-
-        
-        
+                        if(plugManager.rateResource(name,rating)){
+                            System.out.println("Yipee!! Rating has been recorded.");
+                        } else{
+                            System.out.println("Failed to rate. Make sure the resource exists and rating is between 1.0 and 5.0. ");
+                        }  
+                    }
+                    else if(choice.equals("2")){ // user chooses to exit the rating 
+                        System.out.println("\nThank you for using the Plug");
+                        break;
+                    }
+                    else {
+                        System.out.println("Invalid option. Try again");
+                    }        
+    
+                }
+            }
+            else if (menuIndex == 4){
+                break;
+            }
+        }
+        user.close();   
 
     }
 
-// // Search test
-   // System.out.println("\nSearching for 'Apple':");
-   // Resource found = bst.search("Apple");
-   // System.out.println(found != null ? "Found: " + found.getName() : "Not found");
-
-
-   // System.out.println("\nSearching for 'Berry':");
-   // found = bst.search("Berry");
-   // System.out.println(found != null ? "Still found (should be deleted)" : "Not found (correct)");
-
-
-   // PlugManager manager = new PlugManager();
-   // manager.loadResources();  // Make sure this is working
-
-
-   // Scanner scanner = new Scanner(System.in);
-   // System.out.println("1. Request removal of a resource");
-   // System.out.println("2. Exit");
-   // System.out.print("Choose an option: ");
-  
-   // int choice = scanner.nextInt();
-   // scanner.nextLine(); // consume newline
-
-
-   // // Create and insert some test resources
-   // Resource r4 = new Resource("Apple", "Pomona", "Free", "Item", "Academic",
-   //         new ArrayList<>(Arrays.asList("fli")), "None", "apple@pomona.edu");
-   // Resource r5 = new Resource("Berry", "Scripps", "1-10", "Service", "Healthcare and Wellness",
-   //         new ArrayList<>(Arrays.asList("aamp")), "None", "berry@scripps.edu");
-   // Resource r6 = new Resource("Cake", "Harvey Mudd", "Free", "Event", "Entertainment",
-   //         new ArrayList<>(Arrays.asList("fun")), "None", "cake@mudd.edu");
-
-
-   // manager.resourcesByName.insert(r1);
-   // manager.resourcesByName.insert(r2);
-   // manager.resourcesByName.insert(r3);
-
-
-   // // Show user what resources exist ~ i only did this bc i forgot resources it works!!
-   // ArrayList<Resource> existing = new ArrayList<>();
-   // manager.resourcesByName.inOrderTraversal(manager.resourcesByName.getRoot(), existing);
-
-
-   // System.out.println("Available Resources:");
-   // for (Resource res : existing) {
-   //     System.out.println("- " + res.getName());
-   // }
-
-
-//     // Allow user to request removal
-//     manager.userRequestResourceRemoval();
-
-
-    // Test for getTopRatedResources with only one resource rated
-
-
-    // public static void testGetTopRatedResourcesWithSingleRating(PlugManager plugManager) {
-    //     plugManager.rateResource("Resource A", 5.0f);
-    //     List<Resource> topRated = plugManager.getTopRatedResources(1);
-    //     System.out.println("Top rated resources with one resource rated:");
-    //     for (Resource resource : topRated) {
-    //         System.out.println("  " + resource.getName() + " with rating " + resource.getRate());
-    //     }
-    // }
-
-
-//     PlugManager plugManager = new PlugManager();
-// // Add some test resources
-//         plugManager.resourcesByName.insert(new Resource("Resource A", "School A", "Free", "Type A", "Genre A", new ArrayList<>(), "2025-05-01", "contact@a.com"));
-//         plugManager.resourcesByName.insert(new Resource("Resource B", "School B", "Paid", "Type B", "Genre B", new ArrayList<>(), "2025-04-15", "contact@b.com"));
-
-//         // Test the user-interactive rating method
-//         Scanner scanner = new Scanner(System.in);
-//         boolean continueRating = true;
-
-//         while (continueRating) {
-//             System.out.println("Enter the name of the resource you want to rate (or 'exit' to quit):");
-//             String resourceName = scanner.nextLine();
-//             if (resourceName.equalsIgnoreCase("exit")) {
-//                 continueRating = false;
-//                 System.out.println("Exiting rating system.");
-//                 break;
-//             }
-
-//             System.out.println("Enter a rating for " + resourceName + " (between 1.0 and 5.0):");
-//             float rating = scanner.nextFloat();
-//             scanner.nextLine(); // Consume the newline character
-
-//             boolean success = .rateResource(resourceName, rating);
-//             if (success) {
-//                 System.out.println("Successfully rated " + resourceName + " with a rating of " + rating);
-//             } else {
-//                 System.out.println("Failed to rate " + resourceName + ". Make sure the rating is between 1.0 and 5.0, and the resource exists.");
-//             }
-
-//             System.out.println("Would you like to rate another resource? (yes/no)");
-//             String response = scanner.nextLine();
-//             if (response.equalsIgnoreCase("no")) {
-//                 continueRating = false;
-//                 System.out.println("Exiting rating system.");
-//             }
-//         }
-//         scanner.close();
-//     }
-    
 }
