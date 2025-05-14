@@ -9,11 +9,12 @@ Welcome to the plug!! A Java-based resource management tool for 5C students on f
 -Rate resources on a scale of 1.0 to 5.0
 
 ##Feature 1. Upload
-
+![main menu for the ThePlug in main terminal](src/thePlug/menuforThePlug.png)
 *In the main menu : type in (1) that correlates with upload resource*
 
 1. Enter the name of the resource you would like to add
 
+![example of main menu when uploading a resource](<src/thePlug/screenshot 1(upload).png>)
 2. Select which school based off what is provided for you Ex: (Claremont McKenna, Harvey Mudd..ect) 
 The schools are in alphabet order and you will have options 1-6 to choose what number which correlates to the school provided. 
 
@@ -75,14 +76,9 @@ Now you are ready equipped to start using THE PLUG!!
 -Java 8 or higher 
 -A text editor or IDE (e.g IDEA, Eclipse, VS Code)
 
-##Installation
-1. Clone the repository: 
-'''bash 
-git clone https://github.com/yourusername/plugmanager.git
+## Running the Plug 
+-[x]Make sure to run the main in the ==Plug Manager class==. 
 
-2. compile & run the project 
-javac PlugManager.java
-java plugmanager
 
 ###Contributing 
 Feel free to submit pull requests and provide feedback. If you have any suggestions or find bugs, please open an issue in the GitHub repositiory.
