@@ -96,8 +96,8 @@ Now you are ready equipped to start using THE PLUG!!
 
 ## Running the Plug 
 
-1. Make sure to run the main in the ==Plug Manager class==. 
+1. Make sure to run the main in the == Plug Manager class ==. 
 
 
-###Contributing 
+### Contributing 
 Feel free to submit pull requests and provide feedback. If you have any suggestions or find bugs, please open an issue in the GitHub repositiory.
