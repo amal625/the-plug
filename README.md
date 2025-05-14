@@ -8,7 +8,7 @@ Welcome to the plug!! A Java-based resource management tool for 5C students on f
 -Search resources by name or category or tag 
 -Rate resources on a scale of 1.0 to 5.0
 
-##Feature 1. Upload
+## Feature 1. Upload
 ![main menu for the ThePlug in main terminal](src/thePlug/menuforThePlug.png)
 *In the main menu : type in (1) that correlates with upload resource*
 
