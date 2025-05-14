@@ -1,7 +1,7 @@
 # the-plug
 Welcome to the plug!! A Java-based resource management tool for 5C students on free, reduced fare prices on events,items,services, and more. 5C students can add, search, rate and remove resources interacting with our program in the hope to make college a bit more budget friendly! 
 
-##Features 〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜
+## Features 〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜
 
 - Add/upload resources with various attributes (name, school, type,ect.) 
 -Remove resources based off system of requests, after a set number of removal requests is met (5 requests) 
@@ -34,7 +34,7 @@ Ex. (fli, AAMP, disability resources)
 
 8. (OPTIONAL) Add the date of when this resource was last used or last active 
 
-##Feature 2. Remove a Resource & Removal Request
+## Feature 2. Remove a Resource & Removal Request
 If you find that a resource is outdated or you used it and would like to submit a removal request this was meant for you! 
 *in the main menu type 3 that correlates with removal request*
 
@@ -52,25 +52,26 @@ If you choose to submit a remove request..write the resource name and double che
 
 If there has been less than five requests then it should appear remove request has been recorded with the number of remove requests 
 
-##Feature 3. Searching for resources
+## Feature 3. Searching for resources
 
 Are you looking for a free/price reduced resource? You came to the right place. 
 Search for the resource you are looking for by school, type, cost, genre, or by tags.
 
 1. *Start to search by choosing 2 from the menu*
      - To Search By Name:
-     ![Type 2 in the main and follow the instructions given](<Search by Name.png>)
-
+     ![search by name by typing 1](<Screenshot 2025-05-14 at 3.39.50 PM.png>)
+     
      - To Search By Categorization
-     ![Type 2 in the main and folloe the instructions given](<Search by Categorization.png>)
+     ![search by categories by typing 2](<Screenshot 2025-05-14 at 3.39.24 PM.png>)
+     
 
      - To Search by Tags
-     ![Type 2 in the main and folloe the instructions given](<Search by Tags.png>)
+     ![search by tags by typing 3](<Screenshot 2025-05-14 at 3.38.58 PM.png>)
 
 
 2. Based off what is shown to you in the menu choose the numbers that correlate to the categories you wish to search by 
 
-##Feature 4. Rate 
+## Feature 4. Rate 
 Tell us what you think about these resources by rating them from 1.0 to 5.0. 
 
 Our rate feature allows multiple people rate a resource and when you want to get that resource it will give you the average rating of each resource based off of these. 
@@ -84,16 +85,18 @@ Our rate feature allows multiple people rate a resource and when you want to get
 Caveat: Also, you are welcome to explore our resources based off of the highest/top rating in the serach option in the menu (number 2)!
 
 
-==Now you are ready equipped to start using THE PLUG!!==
+Now you are ready equipped to start using THE PLUG!!
 
-##Getting Started  ( ˘ ³˘)♥━━━♡━━━━━━♡━━━♥(˘ε ˘ )
+## Getting Started  ( ˘ ³˘)♥━━━♡━━━━━━♡━━━♥(˘ε ˘ )
 
-##Prerequesites
--Java 8 or higher 
--A text editor or IDE (e.g IDEA, Eclipse, VS Code)
+## Prerequesites
+
+1. Java 8 or higher 
+2. A text editor or IDE (e.g IDEA, Eclipse, VS Code)
 
 ## Running the Plug 
--[x]Make sure to run the main in the ==Plug Manager class==. 
+
+1. Make sure to run the main in the ==Plug Manager class==. 
 
 
 ###Contributing 
