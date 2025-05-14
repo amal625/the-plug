@@ -517,7 +517,6 @@ public class PlugManager {
         // In-order traversal
         ArrayList<Resource> allResources = new ArrayList<>(); // i don't know if we want to do it in a arrayList
         resourcesByName.inOrderTraversal(resourcesByName.getRoot(), allResources);
-
     }
 
     public void userRequestResourceRemoval(){
@@ -551,8 +550,6 @@ public class PlugManager {
             saveResources();//save updated state to file
         }
     }
-
-
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -660,7 +657,7 @@ public class PlugManager {
     /**
     * feature 4: Rate a resource
     // */
-    public boolean rateResource (String name, float rating){
+    public boolean rateResource (String name, double rating){
         if (rating <1.0 || rating > 5.0){
             return false;
         }
@@ -676,19 +673,22 @@ public class PlugManager {
     /**
     * get the top rated resources in a priority queue
     */
-    public List<Resource> getTopRatedResources(int n){
-        PriorityQueue<Resource> maxHeap = new PriorityQueue<>();
-        (a,b) -> Double.compare(b.getRate(), a.getRate());
-        for (Resource re1 : resourcesByName.inOrderTraversal()){
-            if (re1.getRate() !=-1){
-                maxHeap.offer(re1);
+    public ArrayList<Resource> getTopRatedResources(int n){
+        // PriorityQueue<Resource> maxHeap = new PriorityQueue<>((a,b) -> Double.compare(b.getRate(), a.getRate()));
+        PriorityQueue<Resource> maxHeap = new PriorityQueue<>(resourcesByName.size(resourcesByName.getRoot()), Resource.compareByRating());  
+        
+        ArrayList<Resource> resources = new ArrayList<>();
+        resourcesByName.inOrderTraversal(resourcesByName.getRoot(), resources);
+        for (Resource r : resources){
+            if (r.getRate() !=-1){
+                maxHeap.offer(r);
             }
         }
-        List<Resource> topRated = new ArrayList<>();
+        ArrayList<Resource> topRated = new ArrayList<>();
         for (int i =0 ; i <n && !maxHeap.isEmpty();i++){
             topRated.add(maxHeap.poll());
         }
-         return topRated;
+        return topRated;
      }
 
 
@@ -700,20 +700,30 @@ public class PlugManager {
     public static void main(String[] args){
         PlugManager plugManager = new PlugManager();
         plugManager.loadResources();
+        
+        plugManager.rateResource("Book Room",5.0);
+        plugManager.rateResource("Book Room",4.0);
+        plugManager.rateResource("Free Room",4.0);
+        plugManager.rateResource("Wellness Machine", 3.5);
+        plugManager.rateResource("Greenbox Program",5.0);
+        
+
+        System.out.println(plugManager.getTopRatedResources(4));
+
 
         ArrayList<String> tags = new ArrayList<> (Arrays.asList("FGLI","health"));
         ArrayList<String> tags1 = new ArrayList<> (Arrays.asList("aamp", "health"));
 
         Resource r1 = new Resource("Health Center", "Pomona", "Free", "Service", "Healthcare and Wellness", tags, "None", "None");
 
-        plugManager.addResource(r1);
-        System.out.println("Testing resource removal");
+        // plugManager.addResource(r1);
+        // System.out.println("Testing resource removal");
 
-        for(int i = 1; i <= 5; i++){
-            System.out.println(r1.getRemoveRequests());
-            System.out.println("request num" + i);
-            System.out.println(plugManager.requestRemoval("Health Center"));
-        }
+        // for(int i = 1; i <= 5; i++){
+        //     System.out.println(r1.getRemoveRequests());
+        //     System.out.println("request num" + i);
+        //     System.out.println(plugManager.requestRemoval("Health Center"));
+        // }
 
         // System.out.println("removing the same resource again");
         // boolean secondRemove = plugManager.requestRemoval("Health Center");

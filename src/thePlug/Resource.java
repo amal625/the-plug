@@ -162,7 +162,7 @@ public class Resource implements Comparable<Resource>{
      * will allow rating for the user
      * @param newRate
      */
-    public void rate (float newRate){
+    public void rate (double newRate){
         if (numRatings == 0){
             this.rate = newRate;
         }
@@ -183,6 +183,10 @@ public class Resource implements Comparable<Resource>{
     public int comparebySchool(Resource a, Resource b){
         return a.school.compareTo(b.school);
     }
+
+    public static Comparator<Resource> compareByRating(){
+        return (Resource r1, Resource r2) -> Double.compare(r1.getRate(), r2.getRate());
+    }
  
     
     public int comparebyTags(Resource a, Resource b){ //put a pin in it come back 
@@ -194,6 +198,7 @@ public class Resource implements Comparable<Resource>{
         }
         return Integer.compare(a.tags.size(), b.tags.size());
     }
+
 
     
     public String toString(){
